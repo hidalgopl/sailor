@@ -49,9 +49,9 @@ func Run(conf *config.Config) error {
 	}
 	pubMsg := messages.StartTestSuitePub{
 		TestSuiteID: testSuiteID,
-		Url: "https://realmadryt.pl",
-		Tests: []string{"SEC#0001", "SEC#0002", "SEC#0003", "SEC#0004"},
-		Timestamp: time.Now(),
+		Url:         "https://realmadryt.pl",
+		Tests:       []string{"SEC#0001", "SEC#0002", "SEC#0003", "SEC#0004"},
+		Timestamp:   time.Now(),
 	}
 	ec.Publish(startTestSuiteSubject, pubMsg)
 
@@ -61,7 +61,7 @@ func Run(conf *config.Config) error {
 	}
 
 	// Wait for a message
-	for  {
+	for {
 		msg, err := sub.NextMsg(30 * time.Second)
 		if err != nil {
 			log.Fatal(err)
@@ -84,7 +84,6 @@ func Run(conf *config.Config) error {
 
 type runnerResp struct {
 	Subject string `json:"subject"`
-
 }
 
 func setupConnOptions(opts []nats.Option) []nats.Option {

@@ -19,9 +19,9 @@ var runCmd = &cobra.Command{
 		conf := config.GetConf()
 		fmt.Printf("Running test suite for user %s\n", conf.Username)
 		authenticator := auth.Authenticator{
-			Username: conf.Username,
+			Username:  conf.Username,
 			AccessKey: conf.AccessKey,
-			Url: "http://localhost:8072/auth",
+			Url:       "http://localhost:8072/auth",
 		}
 		isAllowed, msg := authenticator.DoAuth()
 		if !isAllowed {

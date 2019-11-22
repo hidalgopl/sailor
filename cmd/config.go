@@ -6,15 +6,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
-
 func init() {
 	rootCmd.AddCommand(configCmd)
 }
 
-
 var configCmd = &cobra.Command{
-	Use: "config",
+	Use:   "config",
 	Short: "Print the loaded config",
 	Run: func(cmd *cobra.Command, args []string) {
 		conf := config.GetConf()
