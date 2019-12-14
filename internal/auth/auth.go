@@ -19,7 +19,7 @@ func (auth *Authenticator) redirectPolicyFunc(req *http.Request, via []*http.Req
 }
 
 func (auth *Authenticator) DoAuth() (bool, string) {
-	client := &http.Client{
+	client := http.Client{
 		CheckRedirect: auth.redirectPolicyFunc,
 	}
 	req, err := http.NewRequest("GET", "http://localhost:8072/tests/auth", nil)

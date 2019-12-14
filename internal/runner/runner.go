@@ -15,6 +15,7 @@ import (
 
 func Run(conf *config.Config) error {
 	client := &http.Client{}
+	fmt.Println(conf.PrettyPrint())
 	fmt.Println("I'm running high as fuck!")
 	url := "http://localhost:8072/tests/run"
 	req, err := http.NewRequest("GET", url, nil)
@@ -40,16 +41,18 @@ func Run(conf *config.Config) error {
 	// Connect Options.
 	opts := []nats.Option{nats.Name("NATS Sample Queue Subscriber")}
 	opts = setupConnOptions(opts)
-	nc, err := nats.Connect("http://admin:secureapigonnakickyourasses@localhost:4222", opts...)
+	fmt.Println("trying to connect")
+	nc, err := nats.Connect(conf.NatsURL, opts...)
 	defer nc.Close()
 	ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
 	defer ec.Close()
+	fmt.Println("connected")
 	if err != nil {
 		log.Fatal(err)
 	}
 	pubMsg := messages.StartTestSuitePub{
 		TestSuiteID: testSuiteID,
-		Url:         "https://realmadryt.pl",
+		Url:         conf.Url,
 		Tests:       []string{"SEC#0001", "SEC#0002", "SEC#0003", "SEC#0004"},
 		Timestamp:   time.Now(),
 	}
@@ -89,7 +92,7 @@ type runnerResp struct {
 func setupConnOptions(opts []nats.Option) []nats.Option {
 	totalWait := 10 * time.Minute
 	reconnectDelay := time.Second
-
+	//opts = append(opts, nats.DefaultTimeout())
 	opts = append(opts, nats.ReconnectWait(reconnectDelay))
 	opts = append(opts, nats.MaxReconnects(int(totalWait/reconnectDelay)))
 	opts = append(opts, nats.DisconnectErrHandler(func(nc *nats.Conn, err error) {
