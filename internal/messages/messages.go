@@ -12,6 +12,7 @@ type StartTestSuitePub struct {
 	Url         string    `json:"url"`
 	Tests       []string  `json:"tests"`
 	Timestamp   time.Time `json:"timestamp"`
+	UserID      string    `json:"user_id"`
 }
 
 func (msg *StartTestSuitePub) Print() string {
@@ -30,4 +31,5 @@ type TestSuiteFinishedPub struct {
 	Url         string            `json:"url"`
 	Tests       []TestFinishedPub `json:"tests"`
 	Timestamp   time.Time         `json:"timestamp"`
+	UserID      string    `json:"user_id"`
 }

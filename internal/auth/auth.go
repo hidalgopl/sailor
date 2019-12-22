@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/sirupsen/logrus"
@@ -13,29 +14,30 @@ type Authenticator struct {
 	Url       string
 }
 
-func (auth *Authenticator) redirectPolicyFunc(req *http.Request, via []*http.Request) error {
-	req.SetBasicAuth(auth.Username, auth.AccessKey)
-	return nil
-}
-
-func (auth *Authenticator) DoAuth() (bool, string) {
+func (auth *Authenticator) DoAuth() (bool, string, string) {
 	client := http.Client{
-		CheckRedirect: auth.redirectPolicyFunc,
 	}
-	req, err := http.NewRequest("GET", "http://localhost:8072/tests/auth", nil)
+	body, err := json.Marshal(map[string]string{
+		"username":   auth.Username,
+		"access_key": auth.AccessKey,
+	})
+	if err != nil {
+		// TODO: handle can't create body
+	}
+	req, err := http.NewRequest("POST", "http://localhost:8072/tests/auth", bytes.NewBuffer(body))
 	if err != nil {
 		//
 	}
-	req.SetBasicAuth(auth.Username, auth.AccessKey)
+	req.Header.Set("Content-Type", "application/json")
 	resp, err := client.Do(req)
 	if err != nil {
 		fmt.Printf("oops: %v", err)
-		return false, ""
+		return false, "", ""
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		fmt.Println("oops")
-		return false, ""
+		return false, "", ""
 	}
 	authResp := authResponse{}
 	err = json.NewDecoder(resp.Body).Decode(&authResp)
@@ -43,14 +45,15 @@ func (auth *Authenticator) DoAuth() (bool, string) {
 		logrus.Errorf("unexpected resp body: %v", err)
 	}
 	if !authResp.IsAllowed {
-		return false, "not allowed"
+		return false, "not allowed", ""
 	}
 	fmt.Printf("auth went well \n")
-	return authResp.IsAllowed, authResp.RemainLimit
+	return authResp.IsAllowed, authResp.RemainLimit, authResp.UserId
 
 }
 
 type authResponse struct {
 	IsAllowed   bool   `json:"is_allowed"`
 	RemainLimit string `json:"remain_limit"`
+	UserId      string `json:"user_id"`
 }

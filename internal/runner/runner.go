@@ -7,31 +7,13 @@ import (
 	"github.com/hidalgopl/sailor/internal/messages"
 	"github.com/nats-io/nats.go"
 	"github.com/rs/xid"
-	"github.com/sirupsen/logrus"
 	"log"
-	"net/http"
 	"time"
 )
 
-func Run(conf *config.Config) error {
-	client := &http.Client{}
+func Run(conf *config.Config, userId string) error {
 	fmt.Println(conf.PrettyPrint())
 	fmt.Println("I'm running high as fuck!")
-	url := "http://localhost:8072/tests/run"
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return err
-	}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Printf("err: %v", err)
-		return err
-	}
-	subResp := runnerResp{}
-	err = json.NewDecoder(resp.Body).Decode(&subResp)
-	if err != nil {
-		logrus.Errorf("unexpected resp body: %v", err)
-	}
 	testSuiteID := xid.New().String()
 	startTestSuiteSubject := fmt.Sprintf("test_suite.%s.created", testSuiteID)
 	subscribeWildcard := fmt.Sprintf("test_suite.%s.>", testSuiteID)
@@ -55,6 +37,7 @@ func Run(conf *config.Config) error {
 		Url:         conf.Url,
 		Tests:       []string{"SEC#0001", "SEC#0002", "SEC#0003", "SEC#0004"},
 		Timestamp:   time.Now(),
+		UserID:      userId,
 	}
 	ec.Publish(startTestSuiteSubject, pubMsg)
 
