@@ -47,7 +47,7 @@ func (auth *Authenticator) DoAuth() (bool, string, string) {
 	if !authResp.IsAllowed {
 		return false, "not allowed", ""
 	}
-	fmt.Printf("auth went well \n")
+	logrus.Info("auth went well")
 	return authResp.IsAllowed, authResp.RemainLimit, authResp.UserId
 
 }

@@ -13,7 +13,6 @@ import (
 
 func Run(conf *config.Config, userId string) error {
 	fmt.Println(conf.PrettyPrint())
-	fmt.Println("I'm running high as fuck!")
 	testSuiteID := xid.New().String()
 	startTestSuiteSubject := fmt.Sprintf("test_suite.%s.created", testSuiteID)
 	subscribeWildcard := fmt.Sprintf("test_suite.%s.>", testSuiteID)
@@ -23,19 +22,25 @@ func Run(conf *config.Config, userId string) error {
 	// Connect Options.
 	opts := []nats.Option{nats.Name("NATS Sample Queue Subscriber")}
 	opts = setupConnOptions(opts)
-	fmt.Println("trying to connect")
+	log.Println("trying to connect")
 	nc, err := nats.Connect(conf.NatsURL, opts...)
 	defer nc.Close()
 	ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
 	defer ec.Close()
-	fmt.Println("connected")
+	log.Println("connected")
 	if err != nil {
 		log.Fatal(err)
+	}
+	tp := config.NewTestParser(conf)
+	testsToRun, err := tp.GetTestList()
+	if err != nil {
+		log.Fatal(err)
+		panic(err)
 	}
 	pubMsg := messages.StartTestSuitePub{
 		TestSuiteID: testSuiteID,
 		Url:         conf.Url,
-		Tests:       []string{"SEC#0001", "SEC#0002", "SEC#0003", "SEC#0004"},
+		Tests:       testsToRun,
 		Timestamp:   time.Now(),
 		UserID:      userId,
 	}
@@ -48,6 +53,7 @@ func Run(conf *config.Config, userId string) error {
 
 	// Wait for a message
 	for {
+		// TODO - buggy, finishes to early
 		msg, err := sub.NextMsg(30 * time.Second)
 		if err != nil {
 			log.Fatal(err)
