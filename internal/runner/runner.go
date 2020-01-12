@@ -31,16 +31,10 @@ func Run(conf *config.Config, userId string) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-	tp := config.NewTestParser(conf)
-	testsToRun, err := tp.GetTestList()
-	if err != nil {
-		log.Fatal(err)
-		panic(err)
-	}
 	pubMsg := messages.StartTestSuitePub{
 		TestSuiteID: testSuiteID,
 		Url:         conf.Url,
-		Tests:       testsToRun,
+		Tests:       messages.TestNames,
 		Timestamp:   time.Now(),
 		UserID:      userId,
 	}
