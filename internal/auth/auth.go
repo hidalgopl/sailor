@@ -8,12 +8,14 @@ import (
 	"net/http"
 )
 
+// Authenticator ...
 type Authenticator struct {
 	Username  string
 	AccessKey string
-	Url       string
+	URL       string
 }
 
+// DoAuth ...
 func (auth *Authenticator) DoAuth() (bool, string, string) {
 	client := http.Client{
 	}
@@ -48,12 +50,12 @@ func (auth *Authenticator) DoAuth() (bool, string, string) {
 		return false, "not allowed", ""
 	}
 	logrus.Info("auth went well")
-	return authResp.IsAllowed, authResp.RemainLimit, authResp.UserId
+	return authResp.IsAllowed, authResp.RemainLimit, authResp.UserID
 
 }
 
 type authResponse struct {
 	IsAllowed   bool   `json:"is_allowed"`
 	RemainLimit string `json:"remain_limit"`
-	UserId      string `json:"user_id"`
+	UserID      string `json:"user_id"`
 }

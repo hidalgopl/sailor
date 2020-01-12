@@ -21,11 +21,11 @@ var runCmd = &cobra.Command{
 		authenticator := auth.Authenticator{
 			Username:  conf.Username,
 			AccessKey: conf.AccessKey,
-			Url:       "http://localhost:8072/auth",
+			URL:       "http://localhost:8072/auth",
 		}
-		isAllowed, msg, userId := authenticator.DoAuth()
+		isAllowed, msg, userID := authenticator.DoAuth()
 		if isAllowed {
-			runner.Run(conf, userId)
+			runner.Run(conf, userID)
 
 		} else {
 			fmt.Println(msg)

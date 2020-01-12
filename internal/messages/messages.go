@@ -7,18 +7,21 @@ import (
 	"time"
 )
 
+// StartTestSuitePub ...
 type StartTestSuitePub struct {
 	TestSuiteID string    `json:"test_suite_id"`
-	Url         string    `json:"url"`
+	URL         string    `json:"url"`
 	Tests       []string  `json:"tests"`
 	Timestamp   time.Time `json:"timestamp"`
 	UserID      string    `json:"user_id"`
 }
 
+// Print ...
 func (msg *StartTestSuitePub) Print() string {
-	return fmt.Sprintf("[%s] URL: %s {%s}", msg.Timestamp, msg.Url, strings.Join(msg.Tests[:], ","))
+	return fmt.Sprintf("[%s] URL: %s {%s}", msg.Timestamp, msg.URL, strings.Join(msg.Tests[:], ","))
 }
 
+// TestFinishedPub ...
 type TestFinishedPub struct {
 	TestSuiteID string            `json:"test_suite_id"`
 	Result      status.TestStatus `json:"result"`
@@ -26,10 +29,11 @@ type TestFinishedPub struct {
 	Timestamp   time.Time         `json:"timestamp"`
 }
 
+// TestSuiteFinishedPub ...
 type TestSuiteFinishedPub struct {
 	TestSuiteID string            `json:"test_suite_id"`
-	Url         string            `json:"url"`
+	URL         string            `json:"url"`
 	Tests       []TestFinishedPub `json:"tests"`
 	Timestamp   time.Time         `json:"timestamp"`
-	UserID      string    `json:"user_id"`
+	UserID      string            `json:"user_id"`
 }

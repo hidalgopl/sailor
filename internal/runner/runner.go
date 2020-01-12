@@ -11,7 +11,8 @@ import (
 	"time"
 )
 
-func Run(conf *config.Config, userId string) error {
+// Run ...
+func Run(conf *config.Config, userID string) error {
 	fmt.Println(conf.PrettyPrint())
 	testSuiteID := xid.New().String()
 	startTestSuiteSubject := fmt.Sprintf("test_suite.%s.created", testSuiteID)
@@ -33,10 +34,10 @@ func Run(conf *config.Config, userId string) error {
 	}
 	pubMsg := messages.StartTestSuitePub{
 		TestSuiteID: testSuiteID,
-		Url:         conf.Url,
+		URL:         conf.URL,
 		Tests:       messages.TestNames,
 		Timestamp:   time.Now(),
-		UserID:      userId,
+		UserID:      userID,
 	}
 	ec.Publish(startTestSuiteSubject, pubMsg)
 

@@ -5,20 +5,23 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Config ...
 type Config struct {
 	Username  string   `yaml:username`
 	AccessKey string   `yaml:accessKey`
-	Url       string   `yaml: url`
+	URL       string   `yaml: url`
 	Tests     []string `yaml: tests`
 	NatsURL   string   `yaml:natsUrl`
 }
 
+// PrettyPrint ...
 func (c *Config) PrettyPrint() string {
 	configStr := fmt.Sprintf(
-		"username: %s \naccess_key: <hidden> \nurl: %s \ntests: %s\n natsUrl: %s", c.Username, c.Url, c.Tests, c.NatsURL)
+		"username: %s \naccess_key: <hidden> \nurl: %s \ntests: %s\n natsUrl: %s", c.Username, c.URL, c.Tests, c.NatsURL)
 	return configStr
 }
 
+// GetConf ...
 func GetConf() *Config {
 	err := viper.ReadInConfig()
 	if err != nil {
