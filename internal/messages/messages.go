@@ -3,17 +3,20 @@ package messages
 import (
 	"fmt"
 	"github.com/hidalgopl/sailor/internal/status"
+	"net/http"
 	"strings"
 	"time"
 )
 
 // StartTestSuitePub ...
 type StartTestSuitePub struct {
-	TestSuiteID string    `json:"test_suite_id"`
-	URL         string    `json:"url"`
-	Tests       []string  `json:"tests"`
-	Timestamp   time.Time `json:"timestamp"`
-	UserID      string    `json:"user_id"`
+	TestSuiteID string      `json:"test_suite_id"`
+	URL         string      `json:"url"`
+	Tests       []string    `json:"tests"`
+	Timestamp   time.Time   `json:"timestamp"`
+	UserID      string      `json:"user_id"`
+	Headers     http.Header `json:"headers"`
+	Cookies     http.Cookie `json:"cookies"`
 }
 
 // Print ...

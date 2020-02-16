@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"github.com/hidalgopl/sailor/internal/config"
@@ -8,6 +9,7 @@ import (
 	"github.com/nats-io/nats.go"
 	"github.com/rs/xid"
 	"log"
+	"net/http"
 	"time"
 )
 
@@ -31,6 +33,16 @@ func Run(conf *config.Config, userID string) error {
 	log.Println("connected")
 	if err != nil {
 		log.Fatal(err)
+	}
+	tr := &http.Transport{
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+	}
+	client := &http.Client{Transport: tr}
+	r, err := client.Get(conf.URL)
+	defer r.Body.Close()
+	if err != nil {
+		panic(err)
+		// TODO
 	}
 	pubMsg := messages.StartTestSuitePub{
 		TestSuiteID: testSuiteID,
