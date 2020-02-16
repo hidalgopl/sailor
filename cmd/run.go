@@ -6,6 +6,7 @@ import (
 	"github.com/hidalgopl/sailor/internal/config"
 	"github.com/hidalgopl/sailor/internal/runner"
 	"github.com/spf13/cobra"
+	"net/http"
 )
 
 func init() {
@@ -22,7 +23,9 @@ var runCmd = &cobra.Command{
 			Username:  conf.Username,
 			AccessKey: conf.AccessKey,
 			URL:       "http://localhost:8072/auth",
+			HttpClient: &http.Client{},
 		}
+
 		isAllowed, msg, userID := authenticator.DoAuth()
 		if isAllowed {
 			runner.Run(conf, userID)

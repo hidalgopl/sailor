@@ -13,12 +13,11 @@ type Authenticator struct {
 	Username  string
 	AccessKey string
 	URL       string
+	HttpClient *http.Client
 }
 
 // DoAuth ...
 func (auth *Authenticator) DoAuth() (bool, string, string) {
-	client := http.Client{
-	}
 	body, err := json.Marshal(map[string]string{
 		"username":   auth.Username,
 		"access_key": auth.AccessKey,
@@ -31,7 +30,7 @@ func (auth *Authenticator) DoAuth() (bool, string, string) {
 		//
 	}
 	req.Header.Set("Content-Type", "application/json")
-	resp, err := client.Do(req)
+	resp, err := auth.HttpClient.Do(req)
 	if err != nil {
 		fmt.Printf("oops: %v", err)
 		return false, "", ""
