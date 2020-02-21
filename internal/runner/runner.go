@@ -8,6 +8,7 @@ import (
 	"github.com/hidalgopl/sailor/internal/messages"
 	"github.com/nats-io/nats.go"
 	"github.com/rs/xid"
+	"github.com/sirupsen/logrus"
 	"log"
 	"net/http"
 	"time"
@@ -15,7 +16,6 @@ import (
 
 // Run ...
 func Run(conf *config.Config, userID string) error {
-	fmt.Println(conf.PrettyPrint())
 	testSuiteID := xid.New().String()
 	startTestSuiteSubject := fmt.Sprintf("test_suite.%s.created", testSuiteID)
 	subscribeWildcard := fmt.Sprintf("test_suite.%s.>", testSuiteID)
@@ -25,12 +25,10 @@ func Run(conf *config.Config, userID string) error {
 	// Connect Options.
 	opts := []nats.Option{nats.Name("NATS Sample Queue Subscriber")}
 	opts = setupConnOptions(opts)
-	log.Println("trying to connect")
 	nc, err := nats.Connect(conf.NatsURL, opts...)
 	defer nc.Close()
 	ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
 	defer ec.Close()
-	log.Println("connected")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -57,32 +55,26 @@ func Run(conf *config.Config, userID string) error {
 	if err != nil {
 		log.Fatal(err)
 	}
-
+	finalMsg := ""
 	// Wait for a message
-	for {
-		// TODO - buggy, finishes to early
+	for i := 1;  i<= (len(messages.TestNames) + 1); i++ {
 		msg, err := sub.NextMsg(30 * time.Second)
 		if err != nil {
 			log.Fatal(err)
 		}
 		switch msg.Subject {
 		case testSuiteCompletedSubject:
-			link := "http://secureapi.com/tests/username/" + testSuiteID
-			log.Printf("all tasks executed successfully. Link to your test suite: %s", link)
-			return nil
+			link := "http://secureapi.com/tests/" + conf.Username + "/" + testSuiteID
+			finalMsg = "all tasks executed successfully. Link to your test suite: " + link
 		default:
 			var decodedMsg messages.TestFinishedPub
-			_ = json.Unmarshal(msg.Data, &decodedMsg)
-			log.Printf("[%s] -> %s : result: %v", decodedMsg.TestSuiteID, decodedMsg.TestCode, decodedMsg.Result)
+			json.Unmarshal(msg.Data, &decodedMsg)
+			logrus.Infof("[%s] -> %s : result: %v", decodedMsg.TestSuiteID, decodedMsg.TestCode, decodedMsg.Result)
 		}
 
 	}
-
+	logrus.Info(finalMsg)
 	return nil
-}
-
-type runnerResp struct {
-	Subject string `json:"subject"`
 }
 
 func setupConnOptions(opts []nats.Option) []nats.Option {

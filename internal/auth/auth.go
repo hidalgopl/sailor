@@ -3,9 +3,9 @@ package auth
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
 )
 
 // Authenticator ...
@@ -32,12 +32,14 @@ func (auth *Authenticator) DoAuth() (bool, string, string) {
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := auth.HttpClient.Do(req)
 	if err != nil {
-		fmt.Printf("oops: %v", err)
+		logrus.Error(err)
 		return false, "", ""
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		fmt.Println("oops")
+		errMsg := "failed to authenticate, error code:  " + strconv.Itoa(resp.StatusCode)
+		err  = NewAuthError(errMsg)
+		logrus.Error(err)
 		return false, "", ""
 	}
 	authResp := authResponse{}
@@ -48,7 +50,7 @@ func (auth *Authenticator) DoAuth() (bool, string, string) {
 	if !authResp.IsAllowed {
 		return false, "not allowed", ""
 	}
-	logrus.Info("auth went well")
+	logrus.Infof("Authenticated for %s", auth.Username)
 	return authResp.IsAllowed, authResp.RemainLimit, authResp.UserID
 
 }

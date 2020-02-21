@@ -1,10 +1,10 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/hidalgopl/sailor/internal/auth"
 	"github.com/hidalgopl/sailor/internal/config"
 	"github.com/hidalgopl/sailor/internal/runner"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"net/http"
 )
@@ -18,7 +18,6 @@ var runCmd = &cobra.Command{
 	Short: "Runs your secureapi test session!",
 	Run: func(cmd *cobra.Command, args []string) {
 		conf := config.GetConf()
-		fmt.Printf("Running test suite for user %s\n", conf.Username)
 		authenticator := auth.Authenticator{
 			Username:  conf.Username,
 			AccessKey: conf.AccessKey,
@@ -31,8 +30,8 @@ var runCmd = &cobra.Command{
 			runner.Run(conf, userID)
 
 		} else {
-			fmt.Println(msg)
-			fmt.Printf("Can't authenticate user %s", conf.Username)
+			logrus.Info(msg)
+			logrus.Errorf("Can't authenticate user %s", conf.Username)
 		}
 
 	},
