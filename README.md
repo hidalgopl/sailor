@@ -9,6 +9,9 @@ Sailor is command line tool for security testing your web APIs. Developed and ma
 To run security checks on your API, set `SECUREAPI_USERNAME` and `SECUREAPI_ACCESS_KEY` environment variables. Alternatively, you can pass them in `config.yaml`
  
 `sailor run --config=example_config.yaml`
+
+## Demo
+[![asciicast](https://asciinema.org/a/1cgbJTCXD1iRaQCXy818691Pz.svg)](https://asciinema.org/a/1cgbJTCXD1iRaQCXy818691Pz)
 #### Example config
 ```config.yaml
 username: "your username goes here"
