@@ -3,16 +3,17 @@ package auth
 import (
 	"bytes"
 	"encoding/json"
-	"github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
+
+	"github.com/sirupsen/logrus"
 )
 
 // Authenticator ...
 type Authenticator struct {
-	Username  string
-	AccessKey string
-	URL       string
+	Username   string
+	AccessKey  string
+	URL        string
 	HttpClient *http.Client
 }
 
@@ -38,7 +39,7 @@ func (auth *Authenticator) DoAuth() (bool, string, string) {
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		errMsg := "failed to authenticate, error code:  " + strconv.Itoa(resp.StatusCode)
-		err  = NewAuthError(errMsg)
+		err = NewAuthError(errMsg)
 		logrus.Error(err)
 		return false, "", ""
 	}

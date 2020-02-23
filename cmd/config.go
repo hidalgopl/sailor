@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+
 	"github.com/hidalgopl/sailor/internal/config"
 	"github.com/spf13/cobra"
 )

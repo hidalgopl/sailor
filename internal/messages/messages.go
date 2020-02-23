@@ -2,10 +2,11 @@ package messages
 
 import (
 	"fmt"
-	"github.com/hidalgopl/sailor/internal/status"
 	"net/http"
 	"strings"
 	"time"
+
+	"github.com/hidalgopl/sailor/internal/status"
 )
 
 // StartTestSuitePub ...

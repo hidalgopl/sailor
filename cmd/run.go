@@ -1,12 +1,13 @@
 package cmd
 
 import (
+	"net/http"
+
 	"github.com/hidalgopl/sailor/internal/auth"
 	"github.com/hidalgopl/sailor/internal/config"
 	"github.com/hidalgopl/sailor/internal/runner"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"net/http"
 )
 
 func init() {
@@ -19,9 +20,9 @@ var runCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		conf := config.GetConf()
 		authenticator := auth.Authenticator{
-			Username:  conf.Username,
-			AccessKey: conf.AccessKey,
-			URL:       "http://localhost:8072/auth",
+			Username:   conf.Username,
+			AccessKey:  conf.AccessKey,
+			URL:        "http://localhost:8072/auth",
 			HttpClient: &http.Client{},
 		}
 

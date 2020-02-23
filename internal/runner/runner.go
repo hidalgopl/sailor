@@ -4,14 +4,14 @@ import (
 	"crypto/tls"
 	"encoding/json"
 	"fmt"
-	"github.com/hidalgopl/sailor/internal/config"
-	"github.com/hidalgopl/sailor/internal/messages"
-	"github.com/nats-io/nats.go"
-	"github.com/rs/xid"
-	"github.com/sirupsen/logrus"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/hidalgopl/sailor/internal/config"
+	"github.com/hidalgopl/sailor/internal/messages"
+	"github.com/rs/xid"
+	"github.com/sirupsen/logrus"
 )
 
 // Run ...
@@ -57,7 +57,7 @@ func Run(conf *config.Config, userID string) error {
 	}
 	finalMsg := ""
 	// Wait for a message
-	for i := 1;  i<= (len(messages.TestNames) + 1); i++ {
+	for i := 1; i <= (len(messages.TestNames) + 1); i++ {
 		msg, err := sub.NextMsg(30 * time.Second)
 		if err != nil {
 			log.Fatal(err)

@@ -9,7 +9,6 @@ import (
 	"testing"
 )
 
-
 // NewTestServer starts new *httptest.Server with a given host and port
 func NewTestServer(host, port string, handler http.Handler) *httptest.Server {
 	hostPort := fmt.Sprintf("%s:%s", host, port)
@@ -23,14 +22,13 @@ func NewTestServer(host, port string, handler http.Handler) *httptest.Server {
 	return ts
 }
 
-
 func TestDoAuth(t *testing.T) {
 	// Start a local HTTP server
 	newMockWDServer := func() *httptest.Server {
 		r := http.NewServeMux()
 		r.HandleFunc("/wd/hub/session", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-			body := []byte(`{"sessionId":"` +  `"}`)
+			body := []byte(`{"sessionId":"` + `"}`)
 			_, err := w.Write(body)
 			if err != nil {
 				log.Fatal(err)

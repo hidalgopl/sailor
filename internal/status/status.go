@@ -9,5 +9,5 @@ const (
 	// Failed ...
 	Failed = TestStatus("failed")
 	// Error ...
-	Error  = TestStatus("error")
+	Error = TestStatus("error")
 )
