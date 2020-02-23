@@ -2,6 +2,7 @@
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/hidalgopl/sailor)](https://goreportcard.com/report/github.com/hidalgopl/sailor)
 ![](https://github.com/hidalgopl/sailor/workflows/Tests/badge.svg)
+
 Sailor is command line tool for security testing your web APIs. Developed and maintained by SecureAPI
 
 
