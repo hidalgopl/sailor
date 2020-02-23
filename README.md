@@ -11,7 +11,7 @@ To run security checks on your API, set `SECUREAPI_USERNAME` and `SECUREAPI_ACCE
 `sailor run --config=example_config.yaml`
 
 ## Demo
-[![asciicast](https://asciinema.org/a/1cgbJTCXD1iRaQCXy818691Pz.svg)](https://asciinema.org/a/1cgbJTCXD1iRaQCXy818691Pz)
+![run demo](rundemo.gif)
 #### Example config
 
 | Config key | config value | Description |
@@ -52,7 +52,7 @@ Clone this repository and run `make build`.
 We would love to hear your feedback. We know that no one has time and will to deal with long survey, so we build feedback collector directly into sailor.
 Simply type `sailor feedback` and answer 5 questions (3 are 0-5 scale, only one open question, so you don't waste your time).
 Check it out:
-[![asciicast](https://asciinema.org/a/zbPZ2oM0iwJMSxEeiJJP1Nu86.svg)](https://asciinema.org/a/zbPZ2oM0iwJMSxEeiJJP1Nu86)
+[![feedback demo](feedbackdemo.gif)
 ## CI / CD
 Since sailor is single binary, it's really easy to incorporate it in your CI / CD cycles.
 ### Jenkins integration
