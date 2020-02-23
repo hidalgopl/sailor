@@ -71,8 +71,6 @@ type feedbackRequest struct {
 	OverallScore          int     `json:"overall_score"`
 	ProposedPrice         float64 `json:"proposed_price"`
 	OpenFeedback          string  `json:"open_feedback"`
-	Username              string  `json:"username"`
-	AccessKey             string  `json:"access_key"`
 }
 
 func (f *FeedbackProcessor) sendFeedback(fReq *feedbackRequest) error {
@@ -80,7 +78,10 @@ func (f *FeedbackProcessor) sendFeedback(fReq *feedbackRequest) error {
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequest("POST", "http://localhost:8072/feedback", bytes.NewBuffer(body))
+	req, err := http.NewRequest("POST", "http://localhost:8072/feedback/", bytes.NewBuffer(body))
+	header := f.Username + ":" + f.AccessKey
+	req.Header.Set("X-CLI-CREDS", header)
+	req.Header.Set("Content-Type", "application/json")
 	if err != nil {
 		return err
 	}
@@ -106,7 +107,6 @@ func (f *FeedbackProcessor) Process() error {
 		OverallScore:          OverallScore,
 		ProposedPrice:         ProposedPrice,
 		OpenFeedback:          OpenFeedback,
-		Username:              f.Username,
 	}
 	err = f.sendFeedback(fReq)
 	if err != nil {

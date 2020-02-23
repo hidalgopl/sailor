@@ -13,11 +13,13 @@ To run security checks on your API, set `SECUREAPI_USERNAME` and `SECUREAPI_ACCE
 ## Demo
 [![asciicast](https://asciinema.org/a/1cgbJTCXD1iRaQCXy818691Pz.svg)](https://asciinema.org/a/1cgbJTCXD1iRaQCXy818691Pz)
 #### Example config
-```config.yaml
-username: "your username goes here"
-accessKey: "your access key goes here"
-url: "https://secureapi.dev/demo" # URL you want to test
-```
+
+| Config key | config value | Description |
+| ---------- | ------------ | ----------- |
+|  username  |   hidalgopl  | Your SecureAPI username |
+| accessKey  | 74nfdj3n...2342 | Your SecureAPI access key |
+|    url     | https://secureapi.dev/demo | URL you want to test|
+
 That's all. That's it. Then simply run it by typing `sailor run`!
 
 Sailor will produce output:
@@ -45,6 +47,12 @@ Unpack the `sailor` binary and add it to your PATH and you are good to go!
 ### Compile from source
 Clone this repository and run `make build`. 
 
+
+## Send us feedback
+We would love to hear your feedback. We know that no one has time and will to deal with long survey, so we build feedback collector directly into sailor.
+Simply type `sailor feedback` and answer 5 questions (3 are 0-5 scale, only one open question, so you don't waste your time).
+Check it out:
+[![asciicast](https://asciinema.org/a/zbPZ2oM0iwJMSxEeiJJP1Nu86.svg)](https://asciinema.org/a/zbPZ2oM0iwJMSxEeiJJP1Nu86)
 ## CI / CD
 Since sailor is single binary, it's really easy to incorporate it in your CI / CD cycles.
 ### Jenkins integration
