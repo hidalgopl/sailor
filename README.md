@@ -60,6 +60,16 @@ Since sailor is single binary, it's really easy to incorporate it in your CI / C
 ### Jenkins integration
 
 ### Gitlab integration
+Keep your `secureapi-config.yaml` in repo main dir.
+```yaml .gitlab-ci.yml
+stages:
+ - sectests
+
+secureapi:
+  image: secureapi/sailor:v0.0.2
+  script:
+    - sailor run --config=secureapi-config.yaml
+```
 
 ### Bitbucket pipelines integration
 
