@@ -23,3 +23,8 @@ test:
 coverage: test
 	go tool cover -func=coverage.out
 .PHONY: coverage
+
+
+container: build
+	docker build  -t secureapi/sailor:v0.0.2 .
+.PHONY: container

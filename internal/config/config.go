@@ -9,11 +9,11 @@ import (
 
 // Config ...
 type Config struct {
-	Username  string   `yaml:username`
-	AccessKey string   `yaml:accessKey`
-	URL       string   `yaml: url`
-	Tests     []string `yaml: tests`
-	NatsURL   string   `yaml:natsUrl`
+	Username  string   `yaml:"username"`
+	AccessKey string   `yaml:"accessKey"`
+	URL       string   `yaml:"url"`
+	Tests     []string `yaml:"tests"`
+	NatsURL   string   `yaml:"natsUrl"`
 }
 
 // PrettyPrint ...
