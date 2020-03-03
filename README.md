@@ -67,6 +67,7 @@ stages:
 
 secureapi:
   image: secureapi/sailor:v0.0.2
+  stage: sectests
   script:
     - sailor run --config=secureapi-config.yaml
 ```
