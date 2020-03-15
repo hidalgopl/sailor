@@ -61,12 +61,13 @@ Since sailor is single binary, it's really easy to incorporate it in your CI / C
 
 ### Gitlab integration
 Keep your `secureapi-config.yaml` in repo main dir.
-```yaml .gitlab-ci.yml
+`.gitlab-ci.yml`
+```yaml
 stages:
  - sectests
 
 secureapi:
-  image: secureapi/sailor:v0.0.2
+  image: secureapi/sailor:latest
   stage: sectests
   script:
     - sailor run --config=secureapi-config.yaml
@@ -77,6 +78,32 @@ secureapi:
 ### Github actions integration
 
 ### CircleCI
+Set env variables in CircleCI project:
+`SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY`
+```yaml
+    version: 2.1
+    executors:
+        docker:
+          - image: secureapi/sailor:latest
+    jobs:
+      sec_test:
+        steps:
+          - run:
+              name: Create config
+              command: |
+                             cat <<EOF > secureapi-config.yaml
+                             username: "$SECUREAPI_USERNAME"
+                             accessKey: "$SECUREAPI_ACCESS_KEY"
+                             EOF
+          - run:
+              name: Run test
+              command: sailor run --config=secureapi-config.yaml
+    workflows:
+      version: 2
+      build-master:
+        jobs:
+          - sec_test
+```
 
 ### TeamCity
 
