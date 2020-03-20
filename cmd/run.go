@@ -28,7 +28,10 @@ var runCmd = &cobra.Command{
 
 		isAllowed, msg, userID := authenticator.DoAuth()
 		if isAllowed {
-			runner.Run(conf, userID)
+			err := runner.Run(conf, userID)
+			if err != nil {
+				logrus.Error(err)
+			}
 
 		} else {
 			logrus.Info(msg)
