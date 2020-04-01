@@ -9,6 +9,11 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+
+type Auth interface {
+	DoAuth() (bool, string, error) // returns is_allowed, error
+}
+
 // Authenticator ...
 type Authenticator struct {
 	Username   string
@@ -18,30 +23,30 @@ type Authenticator struct {
 }
 
 // DoAuth ...
-func (auth *Authenticator) DoAuth() (bool, string, string) {
+func (auth *Authenticator) DoAuth() (bool, string, error) {
 	body, err := json.Marshal(map[string]string{
 		"username":   auth.Username,
 		"access_key": auth.AccessKey,
 	})
 	if err != nil {
-		// TODO: handle can't create body
+		return false, "", err
 	}
 	req, err := http.NewRequest("POST", "http://localhost:8072/tests/auth", bytes.NewBuffer(body))
 	if err != nil {
-		//
+		return false, "", err
 	}
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := auth.HttpClient.Do(req)
 	if err != nil {
 		logrus.Error(err)
-		return false, "", ""
+		return false, "", err
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
 		errMsg := "failed to authenticate, error code:  " + strconv.Itoa(resp.StatusCode)
 		err = NewAuthError(errMsg)
 		logrus.Error(err)
-		return false, "", ""
+		return false, "", err
 	}
 	authResp := authResponse{}
 	err = json.NewDecoder(resp.Body).Decode(&authResp)
@@ -49,10 +54,10 @@ func (auth *Authenticator) DoAuth() (bool, string, string) {
 		logrus.Errorf("unexpected resp body: %v", err)
 	}
 	if !authResp.IsAllowed {
-		return false, "not allowed", ""
+		return false, "not allowed", err
 	}
 	logrus.Infof("Authenticated for %s", auth.Username)
-	return authResp.IsAllowed, authResp.RemainLimit, authResp.UserID
+	return authResp.IsAllowed, authResp.UserID, nil
 
 }
 

@@ -26,7 +26,10 @@ var runCmd = &cobra.Command{
 			HttpClient: &http.Client{},
 		}
 
-		isAllowed, msg, userID := authenticator.DoAuth()
+		isAllowed, userID, err := authenticator.DoAuth()
+		if err != nil {
+			logrus.Errorf("Something's wrong on our end, apologies: %s", err)
+		}
 		if isAllowed {
 			err := runner.Run(conf, userID)
 			if err != nil {
@@ -34,7 +37,6 @@ var runCmd = &cobra.Command{
 			}
 
 		} else {
-			logrus.Info(msg)
 			logrus.Errorf("Can't authenticate user %s", conf.Username)
 		}
 
