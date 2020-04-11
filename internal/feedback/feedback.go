@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/hidalgopl/sailor/internal/config"
 	"net/http"
 	"os"
 )
@@ -73,12 +74,17 @@ type feedbackRequest struct {
 	OpenFeedback          string  `json:"open_feedback"`
 }
 
+func (f *FeedbackProcessor) buildURL() string {
+	return config.APIURL + "/feedback/"
+}
+
 func (f *FeedbackProcessor) sendFeedback(fReq *feedbackRequest) error {
 	body, err := json.Marshal(fReq)
 	if err != nil {
 		return err
 	}
-	req, err := http.NewRequest("POST", "http://localhost:8072/feedback/", bytes.NewBuffer(body))
+	uri := f.buildURL()
+	req, err := http.NewRequest("POST", uri, bytes.NewBuffer(body))
 	header := f.Username + ":" + f.AccessKey
 	req.Header.Set("X-CLI-CREDS", header)
 	req.Header.Set("Content-Type", "application/json")
