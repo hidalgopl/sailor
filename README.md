@@ -60,7 +60,7 @@ Since sailor is single binary, it's really easy to incorporate it in your CI / C
 ### Jenkins integration
 
 ### Gitlab integration
-Keep your `secureapi-config.yaml` in repo main dir.
+Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY` to CI/CD variables in Gitlab UI.
 `.gitlab-ci.yml`
 ```yaml
 stages:
@@ -70,16 +70,39 @@ secureapi:
   image: secureapi/sailor:latest
   stage: sectests
   script:
+    - cat <<EOF > secureapi-config.yaml
+      username: "$SECUREAPI_USERNAME"
+      accessKey: "$SECUREAPI_ACCESS_KEY"
+      EOF
     - sailor run --config=secureapi-config.yaml
 ```
 
 ### Bitbucket pipelines integration
+Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY` to bitbucket variables.
+`bitbucket-pipelines.yml`
+```yaml
+image: secureapi/sailor:latest
+pipelines:
+  default:
+    - step:
+        name: Create config
+        script:
+          - cat <<EOF > secureapi-config.yaml
+            username: "$SECUREAPI_USERNAME"
+            accessKey: "$SECUREAPI_ACCESS_KEY"
+            EOF
+    - step:
+        name: Run tests
+        script:
+          - sailor run --config=secureapi-config.yaml
+
+```
 
 ### Github actions integration
 
 ### CircleCI
 Set env variables in CircleCI project:
-`SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY`
+Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY` to env variables in CircleCI UI.
 ```yaml
     version: 2.1
     executors:
@@ -96,7 +119,7 @@ Set env variables in CircleCI project:
                              accessKey: "$SECUREAPI_ACCESS_KEY"
                              EOF
           - run:
-              name: Run test
+              name: Run tests
               command: sailor run --config=secureapi-config.yaml
     workflows:
       version: 2
@@ -108,7 +131,24 @@ Set env variables in CircleCI project:
 ### TeamCity
 
 ### TravisCI
-
+Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY` env variables to Repository Settings.
+```yaml
+sudo: required
+language: go
+services:
+  - docker
+before_install:
+  - docker pull secureapi/sailor:latest
+  - docker run -it -d --name build secureapi/sailor:latest bash
+  - docker exec build git clone https://github.com/user/product.git
+script:
+  - docker exec build cmake -H/product -B/_build
+  - docker exec build cmake --build /_build
+  - docker exec build cmake --build /_build --target documentation
+  - docker exec build cmake --build /_build --target run-tests
+after_success:
+  - docker exec build bash /project/codecov.sh
+```
 ### Bamboo
 
 ## How it works
