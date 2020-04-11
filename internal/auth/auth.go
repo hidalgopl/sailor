@@ -3,6 +3,7 @@ package auth
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/hidalgopl/sailor/internal/config"
 	"net/http"
 	"strconv"
 
@@ -22,6 +23,13 @@ type Authenticator struct {
 	HttpClient *http.Client
 }
 
+func (auth *Authenticator) BuildAuthURL() string {
+	if config.APIURL == "" {
+		config.APIURL = "http://localhost:8072"
+	}
+	return config.APIURL + "/tests/auth"
+}
+
 // DoAuth ...
 func (auth *Authenticator) DoAuth() (bool, string, error) {
 	body, err := json.Marshal(map[string]string{
@@ -31,7 +39,8 @@ func (auth *Authenticator) DoAuth() (bool, string, error) {
 	if err != nil {
 		return false, "", err
 	}
-	req, err := http.NewRequest("POST", "http://localhost:8072/tests/auth", bytes.NewBuffer(body))
+	authURL := auth.BuildAuthURL()
+	req, err := http.NewRequest("POST", authURL, bytes.NewBuffer(body))
 	if err != nil {
 		return false, "", err
 	}
