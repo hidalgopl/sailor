@@ -75,6 +75,9 @@ type feedbackRequest struct {
 }
 
 func (f *FeedbackProcessor) buildURL() string {
+	if config.APIURL == "" {
+		return "http://localhost:8072/feedback/"
+	}
 	return config.APIURL + "/feedback/"
 }
 
