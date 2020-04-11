@@ -12,14 +12,12 @@ type Config struct {
 	Username  string   `yaml:"username"`
 	AccessKey string   `yaml:"accessKey"`
 	URL       string   `yaml:"url"`
-	Tests     []string `yaml:"tests"`
-	NatsURL   string   `yaml:"natsUrl"`
 }
 
 // PrettyPrint ...
 func (c *Config) PrettyPrint() string {
 	configStr := fmt.Sprintf(
-		"username: %s \naccess_key: <hidden> \nurl: %s \ntests: %s\n natsUrl: %s", c.Username, c.URL, c.Tests, c.NatsURL)
+		"username: %s \naccess_key: <hidden> \nurl: %s", c.Username, c.URL)
 	return configStr
 }
 
