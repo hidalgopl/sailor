@@ -35,7 +35,7 @@ INFO[0000] [bp83vtn69kffdtvh7av0] -> SEC0009 : result: failed
 INFO[0000] [bp83vtn69kffdtvh7av0] -> SEC0003 : result: failed 
 INFO[0000] [bp83vtn69kffdtvh7av0] -> SEC0002 : result: failed 
 INFO[0000] [bp83vtn69kffdtvh7av0] -> SEC0008 : result: failed 
-INFO[0000] all tasks executed successfully. Link to your test suite: http://secureapi.com/tests/hidalgopl/bp83vtn69kffdtvh7av0 
+INFO[0000] all tasks executed successfully. Link to your test suite: http://secureapi.com/tests?suite_id=bp83vtn69kffdtvh7av0 
 ```
 
 You can click on the link to your tests and learn there how to fix your security issues.
