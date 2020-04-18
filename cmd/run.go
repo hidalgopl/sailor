@@ -16,7 +16,7 @@ func init() {
 
 var runCmd = &cobra.Command{
 	Use:   "run",
-	Short: "Runs your secureapi test session!",
+	Short: "Runs SecureAPI security checks for you!",
 	Run: func(cmd *cobra.Command, args []string) {
 		conf := config.GetConf()
 		authenticator := auth.Authenticator{

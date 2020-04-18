@@ -29,14 +29,14 @@ var configFile string
 func init() {
 	cobra.OnInitialize(initConfig)
 	rootCmd.PersistentFlags().StringVar(
-		&configFile, "config", "", "config file (default is config.yaml)")
+		&configFile, "config", "", "config file (default is .secureapi.yml)")
 }
 
 func initConfig() {
 	if configFile != "" {
 		viper.SetConfigFile(configFile)
 	} else {
-		viper.SetConfigName("config")
+		viper.SetConfigName(".secureapi")
 		viper.AddConfigPath(".")
 		viper.AddConfigPath("/etc/sailor")
 		viper.AddConfigPath("$HOME/.sailor")

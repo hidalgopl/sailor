@@ -8,9 +8,8 @@ Sailor is command line tool for security testing your web APIs. Developed and ma
 
 
 ## Quickstart
-To run security checks on your API, set `url` you want to test and your SecureAPI `username` and `accessKey`  in `config.yaml`
- 
-`sailor run --config=example_config.yaml`
+To run security checks on your API, set `url` you want to test and your SecureAPI `username` and `accessKey`  in `.secureapi.yml` and execute this command:
+`sailor run`
 
 ## Demo
 ![run demo](rundemo.gif)
@@ -70,11 +69,11 @@ secureapi:
   image: secureapi/sailor:latest
   stage: sectests
   script:
-    - cat <<EOF > secureapi-config.yaml
+    - cat <<EOF > .secureapi.yml
       username: "$SECUREAPI_USERNAME"
       accessKey: "$SECUREAPI_ACCESS_KEY"
       EOF
-    - sailor run --config=secureapi-config.yaml
+    - sailor run
 ```
 
 ### Bitbucket pipelines integration
@@ -87,14 +86,14 @@ pipelines:
     - step:
         name: Create config
         script:
-          - cat <<EOF > secureapi-config.yaml
+          - cat <<EOF > .secureapi.yml
             username: "$SECUREAPI_USERNAME"
             accessKey: "$SECUREAPI_ACCESS_KEY"
             EOF
     - step:
         name: Run tests
         script:
-          - sailor run --config=secureapi-config.yaml
+          - sailor run
 
 ```
 
@@ -114,13 +113,13 @@ Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY` to env variables in CircleCI U
           - run:
               name: Create config
               command: |
-                             cat <<EOF > secureapi-config.yaml
+                             cat <<EOF > .secureapi.yml
                              username: "$SECUREAPI_USERNAME"
                              accessKey: "$SECUREAPI_ACCESS_KEY"
                              EOF
           - run:
               name: Run tests
-              command: sailor run --config=secureapi-config.yaml
+              command: sailor run
     workflows:
       version: 2
       build-master:
@@ -142,12 +141,11 @@ before_install:
   - docker run -it -d --name build secureapi/sailor:latest bash
   - docker exec build git clone https://github.com/user/product.git
 script:
-  - docker exec build cmake -H/product -B/_build
-  - docker exec build cmake --build /_build
-  - docker exec build cmake --build /_build --target documentation
-  - docker exec build cmake --build /_build --target run-tests
-after_success:
-  - docker exec build bash /project/codecov.sh
+  - docker exec build cat <<EOF > .secureapi.yml
+                      username: "$SECUREAPI_USERNAME"
+                      accessKey: "$SECUREAPI_ACCESS_KEY"
+                      EOF
+  - docker exec build sailor run
 ```
 ### Bamboo
 
