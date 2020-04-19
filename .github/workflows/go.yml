@@ -27,6 +27,7 @@ jobs:
     - name: Build
       run: |
         go get -u github.com/gobuffalo/packr/packr
+        go get -u github.com/gobuffalo/packr
         packr
         make build-local
     - name: Test
