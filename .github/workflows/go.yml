@@ -23,7 +23,7 @@ jobs:
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
             dep ensure
         fi
-        go get  github.com/gobuffalo/packr/packr
+        go get -u github.com/gobuffalo/packr/packr
 
     - name: Build
       run: make build-local
