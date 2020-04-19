@@ -19,10 +19,14 @@ var runCmd = &cobra.Command{
 	Short: "Runs SecureAPI security checks for you!",
 	Run: func(cmd *cobra.Command, args []string) {
 		conf := config.GetConf()
+		buildCfg, err := config.LoadBuildConfig()
+		if err != nil {
+			logrus.Errorf("Something's wrong on our end, apologies: %s", err)
+		}
 		authenticator := auth.Authenticator{
 			Username:   conf.Username,
 			AccessKey:  conf.AccessKey,
-			URL:        "http://localhost:8072/auth",
+			URL:        buildCfg.APIUrl + "/tests/auth",
 			HttpClient: &http.Client{},
 		}
 
@@ -31,7 +35,7 @@ var runCmd = &cobra.Command{
 			logrus.Errorf("Something's wrong on our end, apologies: %s", err)
 		}
 		if isAllowed {
-			err := runner.Run(conf, userID)
+			err := runner.Run(conf, userID, buildCfg.NatsUrl, buildCfg.FrontUrl)
 			if err != nil {
 				logrus.Error(err)
 			}

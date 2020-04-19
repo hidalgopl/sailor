@@ -1,0 +1,30 @@
+name: Publish docker image
+on:
+  push:
+    tags:
+    - v*.*.*-pre
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Publish Docker
+      env:
+        NATS_URL: ${{ secrets.NATS_URL }}
+        FRONT_URL: ${{ secrets.FRONT_URL }}
+        API_URL: ${{ secrets.API_URL }}
+      uses: elgohr/Publish-Docker-Github-Action@2.14
+      with:
+        # The name of the image you would like to push
+        name: secureapi/sailor
+        # The login username for the registry
+        username: ${{ secrets.DOCKER_USERNAME }}
+        # The login password for the registry
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        # Use snapshot to push an additional image
+        snapshot: # optional
+        # Use dockerfile when you would like to explicitly build a Dockerfile
+        dockerfile: Dockerfile
+        # Use buildargs when you want to pass a list of environment variables as build-args
+        tag_names: pre-staging-release

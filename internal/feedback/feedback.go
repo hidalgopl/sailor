@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/hidalgopl/sailor/internal/config"
 	"net/http"
 	"os"
 )
@@ -14,13 +13,15 @@ type FeedbackProcessor struct {
 	Username   string
 	AccessKey  string
 	HttpClient *http.Client
+	APIUrl string
 }
 
-func NewFeedbackProcessor(username string, accessKey string) *FeedbackProcessor {
+func NewFeedbackProcessor(username string, accessKey string, apiUrl string) *FeedbackProcessor {
 	feedProc := &FeedbackProcessor{
 		Username:   username,
 		AccessKey:  accessKey,
 		HttpClient: &http.Client{},
+		APIUrl: apiUrl,
 	}
 	return feedProc
 }
@@ -75,10 +76,7 @@ type feedbackRequest struct {
 }
 
 func (f *FeedbackProcessor) buildURL() string {
-	if config.APIURL == "" {
-		return "http://localhost:8072/feedback/"
-	}
-	return config.APIURL + "/feedback/"
+	return f.APIUrl + "/feedback/"
 }
 
 func (f *FeedbackProcessor) sendFeedback(fReq *feedbackRequest) error {

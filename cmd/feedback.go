@@ -16,8 +16,12 @@ var feedbackCmd = &cobra.Command{
 	Short: "Asks you 5 simple questions and send your feedback to us.",
 	Run: func(cmd *cobra.Command, args []string) {
 		conf := config.GetConf()
-		feedProc := feedback.NewFeedbackProcessor(conf.Username, conf.AccessKey)
-		err := feedProc.Process()
+		buildCfg, err := config.LoadBuildConfig()
+		if err != nil {
+			logrus.Error(err)
+		}
+		feedProc := feedback.NewFeedbackProcessor(conf.Username, conf.AccessKey, buildCfg.APIUrl)
+		err = feedProc.Process()
 		if err != nil {
 			logrus.Error(err)
 		}

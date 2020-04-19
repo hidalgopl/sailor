@@ -44,16 +44,9 @@ func queryTestUrl(testUrl string) (*http.Response, error) {
 	return r, nil
 }
 
-func getNatsURL() string {
-	if config.NATSURL == "" {
-		return "nats://localhost:4222"
-	}
-	return config.NATSURL
-}
-
 
 // Run ...
-func Run(conf *config.Config, userID string) error {
+func Run(conf *config.Config, userID string, natsUrl string, frontUrl string) error {
 	err := checkUrl(conf.URL)
 	if err != nil {
 		return err
@@ -64,7 +57,6 @@ func Run(conf *config.Config, userID string) error {
 	// Connect Options.
 	opts := []nats.Option{nats.Name("sailor")}
 	opts = setupConnOptions(opts)
-	natsUrl := getNatsURL()
 	nc, err := nats.Connect(natsUrl, opts...)
 	defer nc.Close()
 	ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
@@ -90,7 +82,6 @@ func Run(conf *config.Config, userID string) error {
 	if err != nil {
 		return err
 	}
-	frontURL := getFrontURL()
 	finalMsg := ""
 	// Wait for a message
 	for i := 1; i <= (len(messages.TestNames) + 1); i++ {
@@ -100,7 +91,7 @@ func Run(conf *config.Config, userID string) error {
 		}
 		switch msg.Subject {
 		case subjects.suiteComplete:
-			finalMsg = "all tasks executed successfully. Link to your test suite: " + frontURL
+			finalMsg = "all tasks executed successfully. Link to your test suite: " + frontUrl
 		default:
 			var decodedMsg messages.TestFinishedPub
 			json.Unmarshal(msg.Data, &decodedMsg)
@@ -110,12 +101,6 @@ func Run(conf *config.Config, userID string) error {
 	}
 	logrus.Info(finalMsg)
 	return nil
-}
-func getFrontURL() string {
-	if config.FRONTURL == "" {
-		return "http://localhost:3000/tests"
-	}
-	return config.FRONTURL + "/tests"
 }
 
 func setupConnOptions(opts []nats.Option) []nats.Option {
