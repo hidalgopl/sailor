@@ -18,6 +18,9 @@ jobs:
 
     - name: Get dependencies
       run: |
+        go get -u github.com/gobuffalo/packr/packr
+        go get -u github.com/gobuffalo/packr
+        packr version
         go get -v -t -d ./...
         if [ -f Gopkg.toml ]; then
             curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
@@ -26,9 +29,7 @@ jobs:
 
     - name: Build
       run: |
-        go get -u github.com/gobuffalo/packr/packr
-        go get -u github.com/gobuffalo/packr
-        packr
+        packr version
         make build-local
     - name: Test
       run: make coverage
