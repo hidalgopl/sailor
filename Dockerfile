@@ -17,7 +17,7 @@ FROM alpine:3.9
 
 COPY --from=builder /app/sailor /usr/bin/sailor
 COPY --from=builder /app/config.yaml /etc/sailor/.secureapi.yml
-RUN chmod +x /usr/local/bin/sailor
+RUN chmod +x /usr/bin/sailor
 
 RUN addgroup -g 1000 sailor && \
     adduser -h /sailor -D -u 1000 -G sailor sailor
