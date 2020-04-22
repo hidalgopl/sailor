@@ -23,6 +23,7 @@ jobs:
     - name: Build
       run: |
         echo $GOPATH
+        go get -u github.com/gobuffalo/packr/packr
         packr version
         make build-local
     - name: Test
