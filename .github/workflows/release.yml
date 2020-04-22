@@ -25,6 +25,9 @@ jobs:
     - name: Build
       run: |
         make build
+    - name: Set output
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF:10}
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -47,7 +50,7 @@ jobs:
         asset_content_type: application/zip
     - name: Render Dockerfile
       env:
-        INJECT_VERSION: ${{ github.ref }}
+        INJECT_VERSION: ${{ steps.vars.outputs.tag }}
         INJECT_RELEASE_ID: ${{ steps.create_release.outputs.id }}
       run: |
         envsubst < Dockerfile > Dockerfile.rendered
@@ -61,5 +64,5 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: secureapi/sailor
-        tags: ${{ github.ref }}
+        tags: ${{ steps.vars.outputs.tag }}
 
