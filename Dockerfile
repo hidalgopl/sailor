@@ -15,7 +15,7 @@ RUN curl -s https://api.github.com/repos/hidalgopl/sailor/releases/${INJECT_RELE
 
 FROM alpine:3.9
 
-COPY --from=builder /app/bin/ /usr/local/bin/
+COPY --from=builder /app/sailor /usr/local/bin/sailor
 COPY --from=builder /app/config.yaml /etc/sailor/.secureapi.yml
 RUN chmod +x /usr/local/bin/sailor
 
