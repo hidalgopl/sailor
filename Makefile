@@ -7,10 +7,8 @@ set-envs:
 build-staging: set-envs build
 
 build:
-	packr
 	GOBIN=$(BINDIR) go install -ldflags $(LDFLAGS) ./...
 	echo "Build complete. Use ./bin/sailor to run it"
-	packr clean
 .PHONY: build
 
 set-locals:

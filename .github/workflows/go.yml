@@ -24,7 +24,8 @@ jobs:
       run: |
         echo $GOPATH
         go get github.com/gobuffalo/packr/packr
-        packr version
+        packr
         make build-local
+        packr clean
     - name: Test
       run: make coverage
