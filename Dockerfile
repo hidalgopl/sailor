@@ -16,6 +16,7 @@ RUN curl -s https://api.github.com/repos/hidalgopl/sailor/releases/${INJECT_RELE
 FROM alpine:3.9
 
 COPY --from=builder /app/sailor /usr/bin/sailor
+COPY --from=build /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=builder /app/config.yaml /etc/sailor/.secureapi.yml
 RUN chmod +x /usr/bin/sailor
 
@@ -23,3 +24,4 @@ RUN addgroup -g 1000 sailor && \
     adduser -h /sailor -D -u 1000 -G sailor sailor
 
 USER sailor
+WORKDIR /sailor
