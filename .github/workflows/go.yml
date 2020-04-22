@@ -20,7 +20,7 @@ jobs:
       run: |
         go get -u github.com/gobuffalo/packr/packr
         go get -u github.com/gobuffalo/packr
-        packr version
+        echo $GOPATH
 
     - name: Build
       run: |
