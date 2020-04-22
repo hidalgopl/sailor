@@ -7,7 +7,7 @@ set-envs:
 build-staging: set-envs build
 
 build:
-	GOBIN=$(BINDIR) CGO_ENABLED=1 go install -ldflags $(LDFLAGS) ./...
+	GOBIN=$(BINDIR) CGO_ENABLED=0 go install -ldflags $(LDFLAGS) ./...
 	echo "Build complete. Use ./bin/sailor to run it"
 .PHONY: build
 
