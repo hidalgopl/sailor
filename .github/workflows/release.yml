@@ -45,4 +45,21 @@ jobs:
         asset_path: ./bin/sailor
         asset_name: sailor
         asset_content_type: application/zip
+    - name: Render Dockerfile
+      env:
+        INJECT_VERSION: ${{ github.ref }}
+        INJECT_RELEASE_ID: ${{ steps.create_release.outputs.id }}
+      run: |
+        envsubst < Dockerfile > Dockerfile.rendered
+        cat Dockerfile.rendered
+        mv Dockerfile.rendered Dockerfile
+        cat Dockerfile
+
+    - name: publish Docker
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: secureapi/sailor
+        tags: ${{ github.ref }}
 
