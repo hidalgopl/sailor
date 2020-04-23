@@ -98,6 +98,17 @@ pipelines:
 ```
 
 ### Github actions integration
+In your deploy repository, set `SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY` secrets.
+Then, just paste this:
+```yaml
+    - name: Run sailor
+      uses: secureapi/sailor-action@master
+      with:
+        url: "https://apistaging.secureapi.dev/tests/my"
+        username: ${{ secrets.SECUREAPI_USERNAME }}
+        access_key: ${{ secrets.SECUREAPI_ACCESS_KEY }}
+```
+You can find [secureapi/sailor-action](https://github.com/secureapi/sailor-action) in Github Actions marketplace. We're working hard to keep this as up to date as possible.
 
 ### CircleCI
 Set env variables in CircleCI project:
