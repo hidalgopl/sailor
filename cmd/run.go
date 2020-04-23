@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/hidalgopl/sailor/internal/auth"
 	"github.com/hidalgopl/sailor/internal/config"
@@ -22,6 +23,7 @@ var runCmd = &cobra.Command{
 		buildCfg, err := config.LoadBuildConfig()
 		if err != nil {
 			logrus.Errorf("Something's wrong on our end, apologies: %s", err)
+			os.Exit(1)
 		}
 		authenticator := auth.Authenticator{
 			Username:   conf.Username,
@@ -33,16 +35,19 @@ var runCmd = &cobra.Command{
 		isAllowed, userID, err := authenticator.DoAuth()
 		if err != nil {
 			logrus.Errorf("Something's wrong on our end, apologies: %s", err)
+			os.Exit(1)
 		}
 		if isAllowed {
 			err := runner.Run(conf, userID, buildCfg.NatsUrl, buildCfg.FrontUrl)
 			if err != nil {
 				logrus.Error(err)
+				os.Exit(1)
 			}
 
 		} else {
 			logrus.Errorf("Can't authenticate user %s", conf.Username)
+			os.Exit(1)
 		}
-
+		os.Exit(0)
 	},
 }
