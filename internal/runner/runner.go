@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/hidalgopl/sailor/internal/metrics"
 	"github.com/nats-io/nats.go"
 	"log"
 	"net/http"
@@ -44,7 +45,6 @@ func queryTestUrl(testUrl string) (*http.Response, error) {
 	return r, nil
 }
 
-
 // Run ...
 func Run(conf *config.Config, userID string, natsUrl string, frontUrl string) error {
 	err := checkUrl(conf.URL)
@@ -68,6 +68,8 @@ func Run(conf *config.Config, userID string, natsUrl string, frontUrl string) er
 	if err != nil {
 		return err
 	}
+	of := metrics.NewOriginFinder()
+	detectedOrigin := of.DetectOrigin()
 	pubMsg := messages.StartTestSuitePub{
 		TestSuiteID: testSuiteID,
 		URL:         conf.URL,
@@ -75,6 +77,7 @@ func Run(conf *config.Config, userID string, natsUrl string, frontUrl string) er
 		Timestamp:   time.Now(),
 		UserID:      userID,
 		Headers:     r.Header,
+		Origin:      string(detectedOrigin),
 	}
 	ec.Publish(subjects.suiteStart, pubMsg)
 
