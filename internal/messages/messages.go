@@ -17,6 +17,7 @@ type StartTestSuitePub struct {
 	Timestamp   time.Time   `json:"timestamp"`
 	UserID      string      `json:"user_id"`
 	Headers     http.Header `json:"headers"`
+	Origin      string      `json:"origin"`
 }
 
 // Print ...
