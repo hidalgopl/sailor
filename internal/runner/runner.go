@@ -85,6 +85,7 @@ func Run(conf *config.Config, userID string, natsUrl string, frontUrl string) er
 	if err != nil {
 		return err
 	}
+	suiteLink := buildTestSuiteLink(frontUrl, testSuiteID)
 	finalMsg := ""
 	// Wait for a message
 	for i := 1; i <= (len(messages.TestNames) + 1); i++ {
@@ -94,7 +95,7 @@ func Run(conf *config.Config, userID string, natsUrl string, frontUrl string) er
 		}
 		switch msg.Subject {
 		case subjects.suiteComplete:
-			finalMsg = "all tasks executed successfully. Link to your test suite: " + frontUrl
+			finalMsg = "all tasks executed successfully. Link to your test suite: " + suiteLink
 		default:
 			var decodedMsg messages.TestFinishedPub
 			json.Unmarshal(msg.Data, &decodedMsg)
@@ -106,6 +107,10 @@ func Run(conf *config.Config, userID string, natsUrl string, frontUrl string) er
 	return nil
 }
 
+func buildTestSuiteLink(frontURL string, testSuiteID string) string {
+	return frontURL + "?suite-id=" + testSuiteID
+}
+
 func setupConnOptions(opts []nats.Option) []nats.Option {
 	totalWait := 10 * time.Minute
 	reconnectDelay := time.Second
@@ -113,13 +118,18 @@ func setupConnOptions(opts []nats.Option) []nats.Option {
 	opts = append(opts, nats.ReconnectWait(reconnectDelay))
 	opts = append(opts, nats.MaxReconnects(int(totalWait/reconnectDelay)))
 	opts = append(opts, nats.DisconnectErrHandler(func(nc *nats.Conn, err error) {
-		log.Printf("Disconnected due to: %s, will attempt reconnects for %.0fm", err, totalWait.Minutes())
+		if err != nil {
+			log.Printf("Disconnected due to: %s, will attempt reconnects for %.0fm", err, totalWait.Minutes())
+		}
 	}))
 	opts = append(opts, nats.ReconnectHandler(func(nc *nats.Conn) {
 		log.Printf("Reconnected [%s]", nc.ConnectedUrl())
 	}))
 	opts = append(opts, nats.ClosedHandler(func(nc *nats.Conn) {
-		log.Fatalf("Exiting: %v", nc.LastError())
+		if nc.LastError() != nil {
+			log.Fatalf("Exiting: %v", nc.LastError())
+		}
+
 	}))
 	return opts
 }
