@@ -12,7 +12,7 @@ build:
 .PHONY: build
 
 set-locals:
-	 NATS_URL=nats://locahost:4222 FRONT_URL=http://localhost:3000 API_URL=http://localhost:8072 envsubst < secrets/secrets.yaml.template >> secrets/staging.yaml
+	 NATS_URL=nats://locahost:4222 FRONT_URL=http://localhost:3000 API_URL=http://localhost:8000 envsubst < secrets/secrets.yaml.template >> secrets/staging.yaml
 .PHONY: set-locals
 
 build-local: set-locals build
