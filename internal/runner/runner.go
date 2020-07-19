@@ -6,6 +6,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/hidalgopl/sailor/internal/metrics"
+	"github.com/hidalgopl/sailor/internal/sectests"
+	"github.com/hidalgopl/sailor/internal/status"
 	"github.com/nats-io/nats.go"
 	"log"
 	"net/http"
@@ -89,6 +91,7 @@ func Run(conf *config.Config, userID string, natsUrl string, frontUrl string) er
 	}
 	suiteLink := buildTestSuiteLink(frontUrl, testSuiteID)
 	finalMsg := ""
+	failedCodes := []string{}
 	// Wait for a message
 	for i := 1; i <= (len(messages.TestNames) + 1); i++ {
 		msg, err := sub.NextMsg(30 * time.Second)
@@ -101,11 +104,17 @@ func Run(conf *config.Config, userID string, natsUrl string, frontUrl string) er
 		default:
 			var decodedMsg messages.TestFinishedPub
 			json.Unmarshal(msg.Data, &decodedMsg)
+			if decodedMsg.Result == status.Failed {
+				failedCodes = append(failedCodes, decodedMsg.TestCode)
+			}
 			logrus.Infof("[%s] -> %s : result: %v", decodedMsg.TestSuiteID, decodedMsg.TestCode, decodedMsg.Result)
 		}
 
 	}
 	logrus.Info(finalMsg)
+	if len(failedCodes) > 0 {
+		sectests.PrintExplanation(failedCodes)
+	}
 	return nil
 }
 
