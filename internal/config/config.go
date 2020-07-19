@@ -7,6 +7,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+var (
+	SECUREAPI_FILENAME = ".secureapi"
+	SECUREAPI_FILE = SECUREAPI_FILENAME + ".yml"
+)
+
 // Config ...
 type Config struct {
 	Username  string   `yaml:"username"`

@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/hidalgopl/sailor/internal/config"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -28,15 +29,16 @@ var configFile string
 
 func init() {
 	cobra.OnInitialize(initConfig)
+	usageMsg := "config file (default is " + config.SECUREAPI_FILE + ")"
 	rootCmd.PersistentFlags().StringVar(
-		&configFile, "config", "", "config file (default is .secureapi.yml)")
+		&configFile, "config", "", usageMsg)
 }
 
 func initConfig() {
 	if configFile != "" {
 		viper.SetConfigFile(configFile)
 	} else {
-		viper.SetConfigName(".secureapi")
+		viper.SetConfigName(config.SECUREAPI_FILENAME)
 		viper.AddConfigPath(".")
 		viper.AddConfigPath("/etc/sailor")
 		viper.AddConfigPath("$HOME/.sailor")
