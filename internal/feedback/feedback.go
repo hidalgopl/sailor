@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"os"
@@ -98,7 +99,8 @@ func (f *FeedbackProcessor) sendFeedback(fReq *feedbackRequest) error {
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusCreated {
-		return err
+		msg := fmt.Sprintf("Apologies. Server error, your anwsers can't be sent. %s", resp.Status)
+		return errors.New(msg)
 	}
 	return nil
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/hidalgopl/sailor/internal/feedback"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"os"
 )
 
 func init() {
@@ -24,6 +25,7 @@ var feedbackCmd = &cobra.Command{
 		err = feedProc.Process()
 		if err != nil {
 			logrus.Error(err)
+			os.Exit(1)
 		}
 	},
 }
