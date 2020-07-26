@@ -59,7 +59,6 @@ func Run(conf *config.Config, userID string, natsUrl string, frontUrl string) er
 	// Connect Options.
 	opts := []nats.Option{nats.Name("sailor")}
 	opts = setupConnOptions(opts)
-	logrus.Infof("Nats url: %s", natsUrl)
 	nc, err := nats.Connect(natsUrl, opts...)
 	defer nc.Close()
 	ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
