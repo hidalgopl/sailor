@@ -1,0 +1,23 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: sailor-cronjob
+spec:
+  schedule: "*/3 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: sectests
+              image: secureapi/sailor:latest
+              command: ["sailor", "run"]
+              volumeMounts:
+                - name: secureapi-config
+                  mountPath: "/etc/sailor"
+                  readOnly: true
+          volumes:
+            - name: secureapi-config
+              configMap:
+                name: secureapi-config
+          restartPolicy: OnFailure

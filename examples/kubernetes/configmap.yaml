@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  .secureapi.yml: |
+    username: '' # paste your username here
+    accessKey: '' # paste your access key here
+    url: '' # paste url you want to test here
+kind: ConfigMap
+metadata:
+  name: secureapi-config
