@@ -8,7 +8,7 @@ Sailor is command line tool for security testing your web APIs. Developed and ma
 
 
 ## Quickstart
-To run security checks on your API, set `url` you want to test and your SecureAPI `username` and `accessKey`  in `.secureapi.yml` and execute this command:
+To run security checks on your API, set `url` you want to test and your SecureAPI `username` and `accessKey`  in `.secureapi.yml` (or appropriate environment variables) and execute this command:
 `sailor run`
 
 ## Demo
@@ -16,11 +16,11 @@ To run security checks on your API, set `url` you want to test and your SecureAP
 #### Example config
 To generate config template, run `sailor init-config`. This will create `.secureapi.yml` file in following format:
 
-| Config key | config value | Description |
-| ---------- | ------------ | ----------- |
-|  username  |   hidalgopl  | Your SecureAPI username |
-| accessKey  | 74nfdj3n...2342 | Your SecureAPI access key |
-|    url     | https://secureapi.dev/demo | URL you want to test|
+| Config key | config value | Description | Env variable |
+| ---------- | ------------ | ----------- | ------------ |
+|  username  |   hidalgopl  | Your SecureAPI username | SECUREAPI_USERNAME |
+| accessKey  | 74nfdj3n...2342 | Your SecureAPI access key | SECUREAPI_ACCESSKEY |
+|    url     | https://secureapi.dev/demo | URL you want to test| SECUREAPI_URL |
 
 That's all. That's it. Then simply run it by typing `sailor run`!
 
@@ -74,7 +74,7 @@ Since sailor is single binary, it's really easy to incorporate it in your CI / C
 ### Jenkins integration
 
 ### Gitlab integration
-Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY` to CI/CD variables in Gitlab UI.
+Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` to CI/CD variables in Gitlab UI.
 `.gitlab-ci.yml`
 ```yaml
 stages:
@@ -84,27 +84,16 @@ secureapi:
   image: secureapi/sailor:latest
   stage: sectests
   script:
-    - cat <<EOF > .secureapi.yml
-      username: "$SECUREAPI_USERNAME"
-      accessKey: "$SECUREAPI_ACCESS_KEY"
-      EOF
     - sailor run
 ```
 
 ### Bitbucket pipelines integration
-Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY` to bitbucket variables.
+Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` to bitbucket variables.
 `bitbucket-pipelines.yml`
 ```yaml
 image: secureapi/sailor:latest
 pipelines:
   default:
-    - step:
-        name: Create config
-        script:
-          - cat <<EOF > .secureapi.yml
-            username: "$SECUREAPI_USERNAME"
-            accessKey: "$SECUREAPI_ACCESS_KEY"
-            EOF
     - step:
         name: Run tests
         script:
@@ -113,7 +102,7 @@ pipelines:
 ```
 
 ### Github actions integration
-In your deploy repository, set `SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY` secrets.
+In your deploy repository, set `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` secrets.
 Then, just paste this:
 ```yaml
     - name: Run sailor
@@ -127,7 +116,7 @@ You can find [secureapi/sailor-action](https://github.com/secureapi/sailor-actio
 
 ### CircleCI
 Set env variables in CircleCI project:
-Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY` to env variables in CircleCI UI.
+Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` to env variables in CircleCI UI.
 ```yaml
     version: 2.1
     executors:
@@ -136,13 +125,6 @@ Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY` to env variables in CircleCI U
     jobs:
       sec_test:
         steps:
-          - run:
-              name: Create config
-              command: |
-                             cat <<EOF > .secureapi.yml
-                             username: "$SECUREAPI_USERNAME"
-                             accessKey: "$SECUREAPI_ACCESS_KEY"
-                             EOF
           - run:
               name: Run tests
               command: sailor run
@@ -156,7 +138,7 @@ Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY` to env variables in CircleCI U
 ### TeamCity
 
 ### TravisCI
-Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESS_KEY` env variables to Repository Settings.
+Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` env variables to Repository Settings.
 ```yaml
 sudo: required
 language: go
@@ -167,10 +149,6 @@ before_install:
   - docker run -it -d --name build secureapi/sailor:latest bash
   - docker exec build git clone https://github.com/user/product.git
 script:
-  - docker exec build cat <<EOF > .secureapi.yml
-                      username: "$SECUREAPI_USERNAME"
-                      accessKey: "$SECUREAPI_ACCESS_KEY"
-                      EOF
   - docker exec build sailor run
 ```
 ### Bamboo
