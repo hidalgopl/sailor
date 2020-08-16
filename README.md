@@ -14,6 +14,7 @@ To run security checks on your API, set `url` you want to test and your SecureAP
 ## Demo
 ![run demo](rundemo.gif)
 #### Example config
+To generate config template, run `sailor init-config`. This will create `.secureapi.yml` file in following format:
 
 | Config key | config value | Description |
 | ---------- | ------------ | ----------- |
@@ -25,17 +26,31 @@ That's all. That's it. Then simply run it by typing `sailor run`!
 
 Sailor will produce output:
 ```bash
-INFO[0000] Authenticated for hidalgopl                  
-INFO[0000] [bp83vtn69kffdtvh7av0] -> SEC0007 : result: failed 
-INFO[0000] [bp83vtn69kffdtvh7av0] -> SEC0006 : result: passed 
-INFO[0000] [bp83vtn69kffdtvh7av0] -> SEC0001 : result: failed 
-INFO[0000] [bp83vtn69kffdtvh7av0] -> SEC0005 : result: passed 
-INFO[0000] [bp83vtn69kffdtvh7av0] -> SEC0004 : result: failed 
-INFO[0000] [bp83vtn69kffdtvh7av0] -> SEC0009 : result: failed 
-INFO[0000] [bp83vtn69kffdtvh7av0] -> SEC0003 : result: failed 
-INFO[0000] [bp83vtn69kffdtvh7av0] -> SEC0002 : result: failed 
-INFO[0000] [bp83vtn69kffdtvh7av0] -> SEC0008 : result: failed 
-INFO[0000] all tasks executed successfully. Link to your test suite: http://secureapi.com/tests?suite_id=bp83vtn69kffdtvh7av0 
+INFO[0000] Authenticated for hidalgopl                     
+INFO[0000] [bssgpb55ictis3l56rj0] -> SEC0007 : result: failed 
+INFO[0000] [bssgpb55ictis3l56rj0] -> SEC0003 : result: passed 
+INFO[0000] [bssgpb55ictis3l56rj0] -> SEC0002 : result: passed 
+INFO[0000] [bssgpb55ictis3l56rj0] -> SEC0005 : result: passed 
+INFO[0000] [bssgpb55ictis3l56rj0] -> SEC0006 : result: passed 
+INFO[0000] [bssgpb55ictis3l56rj0] -> SEC0004 : result: passed 
+INFO[0000] [bssgpb55ictis3l56rj0] -> SEC0008 : result: passed 
+INFO[0000] [bssgpb55ictis3l56rj0] -> SEC0009 : result: passed 
+INFO[0000] [bssgpb55ictis3l56rj0] -> SEC0001 : result: failed 
+INFO[0000] all tasks executed successfully. Link to your test suite: https://secureapi.dev?suite-id=bssgpb55ictis3l56rj0 
+---------------------------------------------------------------------------------------------
+SEC0007: Strict-Transport-Security: max-age=(age in seconds); (other options)
+This header lets a web site tell browsers that it should only be accessed using HTTPS, instead of using HTTP.
+Learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security
+
+---------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------
+SEC0001: X-Content-Type-Options: no-sniff
+The server should send an X-Content-Type-Options: nosniff 
+to make sure the browser does not try to detect a different Content-Type 
+than what is actually sent (as this can lead to XSS)
+Learn more: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/X-Content-Type-Options
+
+---------------------------------------------------------------------------------------------
 ```
 
 You can click on the link to your tests and learn there how to fix your security issues.
