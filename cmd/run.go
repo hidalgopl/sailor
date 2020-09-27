@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"crypto/tls"
 	"net/http"
 	"os"
 
@@ -25,11 +26,14 @@ var runCmd = &cobra.Command{
 			logrus.Errorf("Something's wrong on our end, apologies: %s", err)
 			os.Exit(1)
 		}
+		tr := &http.Transport{
+			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+		}
 		authenticator := auth.Authenticator{
 			Username:   conf.Username,
 			AccessKey:  conf.AccessKey,
 			URL:        buildCfg.APIUrl + "/tests/auth",
-			HttpClient: &http.Client{},
+			HttpClient: &http.Client{Transport: tr},
 		}
 
 		isAllowed, userID, err := authenticator.DoAuth()

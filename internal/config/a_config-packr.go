@@ -8,5 +8,5 @@ import "github.com/gobuffalo/packr"
 // and any other packr generated files.
 func init() {
 	packr.PackJSONBytes("./../../secrets", "secrets.yaml.template", "\"bmF0c1VybDogIiR7TkFUU19VUkx9Igpmcm9udFVybDogIiR7RlJPTlRfVVJMfSIKYXBpVXJsOiAiJHtBUElfVVJMfSIK\"")
-	packr.PackJSONBytes("./../../secrets", "staging.yaml", "\"bmF0c1VybDogIm5hdHM6Ly9vdHRlcmx5LXNlY3VyZTo0NmFhOWE4YmJiM2M0NzQzMDJiYkAzNC43Ni4yMTkuMTU4OjQyMjIiCmZyb250VXJsOiAiaHR0cHM6Ly9zdGFnaW5nLnNlY3VyZWFwaS5kZXYiCmFwaVVybDogImh0dHA6Ly9zdGFnZS1iZS5zZWN1cmVhcGkuZGV2Igo=\"")
+	packr.PackJSONBytes("./../../secrets", "staging.yaml", "\"bmF0c1VybDogIm5hdHM6Ly9vdHRlcmx5LXNlY3VyZTo0NmFhOWE4YmJiM2M0NzQzMDJiYkAzNS4xOTUuMTQ4LjI0OTo0MjIyIgpmcm9udFVybDogImh0dHBzOi8vYXBwLnNlY3VyZWFwaS5kZXYiCmFwaVVybDogImh0dHBzOi8vYXBpLnNlY3VyZWFwaS5kZXYiCg==\"")
 }
