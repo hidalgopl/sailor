@@ -11,6 +11,8 @@ Sailor is command line tool for security testing your web APIs. Developed and ma
 To run security checks on your API, set `url` you want to test and your SecureAPI `username` and `accessKey`  in `.secureapi.yml` (or appropriate environment variables) and execute this command:
 `sailor run`
 
+[Create SecureAPI account](https://app.secureapi.dev)
+
 ## Demo
 ![run demo](rundemo.gif)
 #### Example config
