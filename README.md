@@ -7,11 +7,15 @@
 Sailor is command line tool for security testing your web APIs. Developed and maintained by SecureAPI
 
 
-## Quickstart
+## Quickstart - trying locally
 To run security checks on your API, set `url` you want to test and your SecureAPI `username` and `accessKey`  in `.secureapi.yml` (or appropriate environment variables) and execute this command:
 `sailor run`
 
-[Create SecureAPI account](https://app.secureapi.dev)
+1. [Create SecureAPI account](https://app.secureapi.dev)
+2. Download latest sailor binary from [the Releases page](https://github.com/hidalgopl/sailor/releases/latest).
+3. In your terminal, run `sailor init-config` to create sailor config template.
+4. Get your credentials from [Your user profile](https://app.secureapi.dev/user-profile) and paste them into `.secureapi.yml` created in previous step
+5. `sailor run` and stay secure!
 
 ## Demo
 ![run demo](rundemo.gif)
