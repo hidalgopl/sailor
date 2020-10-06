@@ -114,11 +114,12 @@ func Run(conf *config.Config, userID string, natsUrl string, frontUrl string) er
 	if len(failedCodes) > 0 {
 		sectests.PrintExplanation(failedCodes)
 	}
+	sectests.PrintSummary(len(failedCodes), len(messages.TestNames))
 	return nil
 }
 
 func buildTestSuiteLink(frontURL string, testSuiteID string) string {
-	return frontURL + "?suite-id=" + testSuiteID
+	return frontURL + "/suite/" + testSuiteID
 }
 
 func setupConnOptions(opts []nats.Option) []nats.Option {
