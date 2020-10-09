@@ -80,7 +80,7 @@ Since sailor is single binary, it's really easy to incorporate it in your CI / C
 ### Jenkins integration
 
 ### Gitlab integration
-Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` to CI/CD variables in Gitlab UI.
+Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` & `SECUREAPI_URL` to CI/CD variables in Gitlab UI.
 `.gitlab-ci.yml`
 ```yaml
 stages:
@@ -94,7 +94,7 @@ secureapi:
 ```
 
 ### Bitbucket pipelines integration
-Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` to bitbucket variables.
+Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` & `SECUREAPI_URL` to bitbucket variables.
 `bitbucket-pipelines.yml`
 ```yaml
 image: secureapi/sailor:latest
@@ -108,7 +108,7 @@ pipelines:
 ```
 
 ### Github actions integration
-In your deploy repository, set `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` secrets.
+In your deploy repository, set `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` & `SECUREAPI_URL` secrets.
 Then, just paste this:
 ```yaml
     - name: Run sailor
@@ -122,7 +122,7 @@ You can find [secureapi/sailor-action](https://github.com/secureapi/sailor-actio
 
 ### CircleCI
 Set env variables in CircleCI project:
-Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` to env variables in CircleCI UI.
+Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` & `SECUREAPI_URL` to env variables in CircleCI UI.
 ```yaml
     version: 2.1
     executors:
@@ -144,7 +144,7 @@ Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` to env variables in CircleCI UI
 ### TeamCity
 
 ### TravisCI
-Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` env variables to Repository Settings.
+Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` & `SECUREAPI_URL` env variables to Repository Settings.
 ```yaml
 sudo: required
 language: go
@@ -158,6 +158,7 @@ script:
   - docker exec build sailor run
 ```
 ### Bamboo
+TBA
 
 ## How it works
 Sailor is a simple tool. It parses the config, sends request to provided URL and then passes all needed information from response to SecureAPI. SecureAPI analyses it and pinpoints where are your security vulnerabilities.
