@@ -4,7 +4,7 @@
 ![](https://github.com/hidalgopl/sailor/workflows/Tests/badge.svg)
 [![](https://img.shields.io/docker/pulls/secureapi/sailor)](https://hub.docker.com/r/secureapi/sailor)
 
-Sailor is command line tool for security testing your web APIs. Developed and maintained by SecureAPI
+Sailor is command line tool for security testing your web APIs. Developed and maintained by [SecureAPI](https://secureapi.dev)
 
 
 ## Quickstart - trying locally
