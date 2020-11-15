@@ -3,7 +3,6 @@
 [![GolangCI](https://golangci.com/badges/github.com/golangci/golangci-lint.svg)](https://golangci.com)
 ![](https://github.com/hidalgopl/sailor/workflows/Tests/badge.svg)
 [![](https://img.shields.io/docker/pulls/secureapi/sailor)](https://hub.docker.com/r/secureapi/sailor)
-
 Sailor is command line tool for security testing your web APIs.
 
 
@@ -144,6 +143,7 @@ script:
   - docker exec build sailor run
 ```
 ### Bamboo
+TBA
 
 ## How it works
 Sailor is a simple tool. It parses the config, sends request to provided URL and then passes all needed information from response to SecureAPI. SecureAPI analyses it and pinpoints where are your security vulnerabilities.
