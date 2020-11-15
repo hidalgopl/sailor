@@ -7,8 +7,6 @@ import (
 
 func CreateConfigTemplate() error {
 	emptyConfig := &Config{
-		Username:  "your SecureAPI username",
-		AccessKey: "your SecureAPI access key",
 		URL:       "https://api.you.want.to.test.com",
 	}
 	bytesConfig, err := yaml.Marshal(&emptyConfig)

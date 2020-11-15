@@ -4,28 +4,22 @@
 ![](https://github.com/hidalgopl/sailor/workflows/Tests/badge.svg)
 [![](https://img.shields.io/docker/pulls/secureapi/sailor)](https://hub.docker.com/r/secureapi/sailor)
 
-Sailor is command line tool for security testing your web APIs. Developed and maintained by SecureAPI
+Sailor is command line tool for security testing your web APIs.
 
 
 ## Quickstart - trying locally
-To run security checks on your API, set `url` you want to test and your SecureAPI `username` and `accessKey`  in `.secureapi.yml` (or appropriate environment variables) and execute this command:
+To run security checks on your API, set `url` you want to test in `.secureapi.yml` (or appropriate environment variables) and execute this command:
 `sailor run`
 
-1. [Create SecureAPI account](https://app.secureapi.dev)
-2. Download latest sailor binary from [the Releases page](https://github.com/hidalgopl/sailor/releases/latest).
-3. In your terminal, run `sailor init-config` to create sailor config template.
-4. Get your credentials from [Your user profile](https://app.secureapi.dev/user-profile) and paste them into `.secureapi.yml` created in previous step
+1. Download latest sailor binary from [the Releases page](https://github.com/hidalgopl/sailor/releases/latest).
+2. Set `SECUREAPI_URL` to the URL you want to test.
 5. `sailor run` and stay secure!
 
-## Demo
-![run demo](rundemo.gif)
 #### Example config
 To generate config template, run `sailor init-config`. This will create `.secureapi.yml` file in following format:
 
 | Config key | config value | Description | Env variable |
 | ---------- | ------------ | ----------- | ------------ |
-|  username  |   hidalgopl  | Your SecureAPI username | SECUREAPI_USERNAME |
-| accessKey  | 74nfdj3n...2342 | Your SecureAPI access key | SECUREAPI_ACCESSKEY |
 |    url     | https://secureapi.dev/demo | URL you want to test| SECUREAPI_URL |
 
 That's all. That's it. Then simply run it by typing `sailor run`!
@@ -69,18 +63,12 @@ Unpack the `sailor` binary and add it to your PATH and you are good to go!
 ### Compile from source
 Clone this repository and run `make build`. 
 
-
-## Send us feedback
-We would love to hear your feedback. We know that no one has time and will to deal with long survey, so we build feedback collector directly into sailor.
-Simply type `sailor feedback` and answer 5 questions (3 are 0-5 scale, only one open question, so you don't waste your time).
-Check it out:
-[![feedback demo](feedbackdemo.gif)
 ## CI / CD
 Since sailor is single binary, it's really easy to incorporate it in your CI / CD cycles.
 ### Jenkins integration
 
 ### Gitlab integration
-Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` to CI/CD variables in Gitlab UI.
+Add `SECUREAPI_URL` to CI/CD variables in Gitlab UI.
 `.gitlab-ci.yml`
 ```yaml
 stages:
@@ -94,7 +82,7 @@ secureapi:
 ```
 
 ### Bitbucket pipelines integration
-Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` to bitbucket variables.
+Add `SECUREAPI_URL` to bitbucket variables.
 `bitbucket-pipelines.yml`
 ```yaml
 image: secureapi/sailor:latest
@@ -108,21 +96,19 @@ pipelines:
 ```
 
 ### Github actions integration
-In your deploy repository, set `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` secrets.
+In your deploy repository, set `SECUREAPI_URL` secrets.
 Then, just paste this:
 ```yaml
     - name: Run sailor
       uses: secureapi/sailor-action@master
       with:
-        url: "https://apistaging.secureapi.dev/tests/my"
-        username: ${{ secrets.SECUREAPI_USERNAME }}
-        access_key: ${{ secrets.SECUREAPI_ACCESS_KEY }}
+        url: ${{ secrets.SECUREAPI_URL }}
 ```
 You can find [secureapi/sailor-action](https://github.com/secureapi/sailor-action) in Github Actions marketplace. We're working hard to keep this as up to date as possible.
 
 ### CircleCI
 Set env variables in CircleCI project:
-Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` to env variables in CircleCI UI.
+Add `SECUREAPI_URL` to env variables in CircleCI UI.
 ```yaml
     version: 2.1
     executors:
@@ -144,7 +130,7 @@ Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` to env variables in CircleCI UI
 ### TeamCity
 
 ### TravisCI
-Add `SECUREAPI_USERNAME` & `SECUREAPI_ACCESSKEY` env variables to Repository Settings.
+Add `SECUREAPI_URL` env variables to Repository Settings.
 ```yaml
 sudo: required
 language: go

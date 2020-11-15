@@ -14,15 +14,13 @@ var (
 
 // Config ...
 type Config struct {
-	Username  string   `yaml:"username"`
-	AccessKey string   `yaml:"accessKey"`
 	URL       string   `yaml:"url"`
 }
 
 // PrettyPrint ...
 func (c *Config) PrettyPrint() string {
 	configStr := fmt.Sprintf(
-		"username: %s \naccess_key: <hidden> \nurl: %s", c.Username, c.URL)
+		"url: %s", c.URL)
 	return configStr
 }
 

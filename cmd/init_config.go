@@ -21,7 +21,7 @@ var initConfigCmd = &cobra.Command{
 			logrus.Error(err)
 			os.Exit(1)
 		}
-		cwd, err := os.Getwd()
+		cwd, _ := os.Getwd()
 		fmt.Printf("Config template created: %s/%s", cwd, config.SECUREAPI_FILE)
 		os.Exit(0)
 	},

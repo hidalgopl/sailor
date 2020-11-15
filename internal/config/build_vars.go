@@ -22,6 +22,6 @@ func LoadBuildConfig() (*buildConfig, error) {
 	}
 	var buildCfg buildConfig
 	err = yaml.Unmarshal([]byte(contents), &buildCfg)
-	return &buildCfg, nil
+	return &buildCfg, err
 
 }

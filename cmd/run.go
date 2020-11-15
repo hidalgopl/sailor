@@ -1,11 +1,8 @@
 package cmd
 
 import (
-	"crypto/tls"
-	"net/http"
 	"os"
 
-	"github.com/hidalgopl/sailor/internal/auth"
 	"github.com/hidalgopl/sailor/internal/config"
 	"github.com/hidalgopl/sailor/internal/runner"
 	"github.com/sirupsen/logrus"
@@ -21,35 +18,9 @@ var runCmd = &cobra.Command{
 	Short: "Runs SecureAPI security checks for you!",
 	Run: func(cmd *cobra.Command, args []string) {
 		conf := config.GetConf()
-		buildCfg, err := config.LoadBuildConfig()
+		err := runner.Run(conf)
 		if err != nil {
-			logrus.Errorf("Something's wrong on our end, apologies: %s", err)
-			os.Exit(1)
-		}
-		tr := &http.Transport{
-			TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
-		}
-		authenticator := auth.Authenticator{
-			Username:   conf.Username,
-			AccessKey:  conf.AccessKey,
-			URL:        buildCfg.APIUrl + "/tests/auth",
-			HttpClient: &http.Client{Transport: tr},
-		}
-
-		isAllowed, userID, err := authenticator.DoAuth()
-		if err != nil {
-			logrus.Errorf("Something's wrong on our end, apologies: %s", err)
-			os.Exit(1)
-		}
-		if isAllowed {
-			err := runner.Run(conf, userID, buildCfg.NatsUrl, buildCfg.FrontUrl)
-			if err != nil {
-				logrus.Error(err)
-				os.Exit(1)
-			}
-
-		} else {
-			logrus.Errorf("Can't authenticate user %s", conf.Username)
+			logrus.Error(err)
 			os.Exit(1)
 		}
 		os.Exit(0)

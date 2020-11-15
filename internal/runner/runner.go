@@ -2,37 +2,20 @@ package runner
 
 import (
 	"crypto/tls"
-	"encoding/json"
 	"errors"
-	"fmt"
-	"github.com/hidalgopl/sailor/internal/metrics"
+	"github.com/hidalgopl/sailor/internal/checks"
 	"github.com/hidalgopl/sailor/internal/sectests"
 	"github.com/hidalgopl/sailor/internal/status"
-	"github.com/nats-io/nats.go"
-	"log"
 	"net/http"
 	url2 "net/url"
+	"sync"
 	"time"
 
 	"github.com/hidalgopl/sailor/internal/config"
 	"github.com/hidalgopl/sailor/internal/messages"
-	"github.com/rs/xid"
 	"github.com/sirupsen/logrus"
 )
 
-type NatsSubjects struct {
-	subWildcard   string
-	suiteStart    string
-	suiteComplete string
-}
-
-func generateSubjects(testSuiteID string) *NatsSubjects {
-	return &NatsSubjects{
-		subWildcard:   fmt.Sprintf("test_suite.%s.>", testSuiteID),
-		suiteStart:    fmt.Sprintf("test_suite.%s.created", testSuiteID),
-		suiteComplete: fmt.Sprintf("test_suite.%s.completed", testSuiteID),
-	}
-}
 
 func queryTestUrl(testUrl string) (*http.Response, error) {
 	tr := &http.Transport{
@@ -48,68 +31,44 @@ func queryTestUrl(testUrl string) (*http.Response, error) {
 }
 
 // Run ...
-func Run(conf *config.Config, userID string, natsUrl string, frontUrl string) error {
+func Run(conf *config.Config) error {
 	err := checkUrl(conf.URL)
 	if err != nil {
-		return err
-	}
-	testSuiteID := xid.New().String()
-	subjects := generateSubjects(testSuiteID)
-	// Connect to NATS
-	// Connect Options.
-	opts := []nats.Option{nats.Name("sailor")}
-	opts = setupConnOptions(opts)
-	nc, err := nats.Connect(natsUrl, opts...)
-	defer nc.Close()
-	ec, err := nats.NewEncodedConn(nc, nats.JSON_ENCODER)
-	defer ec.Close()
-	if err != nil {
-		logrus.Error(err)
 		return err
 	}
 	r, err := queryTestUrl(conf.URL)
 	if err != nil {
 		return err
 	}
-	of := metrics.NewOriginFinder()
-	detectedOrigin := of.DetectOrigin()
+	resultChan := make(chan messages.TestFinishedPub)
 	pubMsg := messages.StartTestSuitePub{
-		TestSuiteID: testSuiteID,
 		URL:         conf.URL,
-		Tests:       messages.TestNames,
 		Timestamp:   time.Now(),
-		UserID:      userID,
 		Headers:     r.Header,
-		Origin:      string(detectedOrigin),
 	}
-	ec.Publish(subjects.suiteStart, pubMsg)
-
-	sub, err := nc.SubscribeSync(subjects.subWildcard)
-	if err != nil {
-		return err
+	wg := &sync.WaitGroup{}
+	for _, testCode := range messages.TestNames {
+		wg.Add(1)
+		go func(testCode string, wg *sync.WaitGroup) {
+			_ = checks.TestCodes[testCode](pubMsg.Headers, resultChan)
+			wg.Done()
+		}(testCode, wg)
 	}
-	suiteLink := buildTestSuiteLink(frontUrl, testSuiteID)
 	finalMsg := ""
-	failedCodes := []string{}
-	// Wait for a message
-	for i := 1; i <= (len(messages.TestNames) + 1); i++ {
-		msg, err := sub.NextMsg(30 * time.Second)
-		if err != nil {
-			return err
-		}
-		switch msg.Subject {
-		case subjects.suiteComplete:
-			finalMsg = "all tasks executed successfully. Link to your test suite: " + suiteLink
-		default:
-			var decodedMsg messages.TestFinishedPub
-			json.Unmarshal(msg.Data, &decodedMsg)
-			if decodedMsg.Result == status.Failed {
-				failedCodes = append(failedCodes, decodedMsg.TestCode)
-			}
-			logrus.Infof("[%s] -> %s : result: %v", decodedMsg.TestSuiteID, decodedMsg.TestCode, decodedMsg.Result)
-		}
+	var failedCodes []string
 
+	// Wait for a message
+	for range messages.TestNames {
+		wg.Add(1)
+		go func(msg messages.TestFinishedPub, wg *sync.WaitGroup) {
+			if msg.Result == status.Failed {
+				failedCodes = append(failedCodes, msg.TestCode)
+			}
+			logrus.Infof("%s : result: %v", msg.TestCode, msg.Result)
+			wg.Done()
+		}(<-resultChan, wg)
 	}
+	wg.Wait()
 	logrus.Info(finalMsg)
 	if len(failedCodes) > 0 {
 		sectests.PrintExplanation(failedCodes)
@@ -118,40 +77,13 @@ func Run(conf *config.Config, userID string, natsUrl string, frontUrl string) er
 	return nil
 }
 
-func buildTestSuiteLink(frontURL string, testSuiteID string) string {
-	return frontURL + "/suite/" + testSuiteID
-}
-
-func setupConnOptions(opts []nats.Option) []nats.Option {
-	totalWait := 10 * time.Minute
-	reconnectDelay := time.Second
-	//opts = append(opts, nats.DefaultTimeout())
-	opts = append(opts, nats.ReconnectWait(reconnectDelay))
-	opts = append(opts, nats.MaxReconnects(int(totalWait/reconnectDelay)))
-	opts = append(opts, nats.DisconnectErrHandler(func(nc *nats.Conn, err error) {
-		if err != nil {
-			log.Printf("Disconnected due to: %s, will attempt reconnects for %.0fm", err, totalWait.Minutes())
-		}
-	}))
-	opts = append(opts, nats.ReconnectHandler(func(nc *nats.Conn) {
-		log.Printf("Reconnected [%s]", nc.ConnectedUrl())
-	}))
-	opts = append(opts, nats.ClosedHandler(func(nc *nats.Conn) {
-		if nc.LastError() != nil {
-			log.Fatalf("Exiting: %v", nc.LastError())
-		}
-
-	}))
-	return opts
-}
-
 func checkUrl(testUrl string) error {
-	u, err := url2.ParseRequestURI(testUrl)
+	_, err := url2.ParseRequestURI(testUrl)
 	if err != nil {
 		errMsg := "Provided test url: " + testUrl + " is not valid URI"
 		return errors.New(errMsg)
 	}
-	u, err = url2.Parse(testUrl)
+	u, err := url2.Parse(testUrl)
 	if err != nil || u.Scheme == "" || u.Host == "" {
 		errMsg := "Provided test url: " + testUrl + " is not valid URI"
 		return errors.New(errMsg)
